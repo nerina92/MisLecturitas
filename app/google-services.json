@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "106967717391",
+    "project_id": "mis-lecturitas-7b62a",
+    "storage_bucket": "mis-lecturitas-7b62a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:106967717391:android:62b0117355a5260a08b57a",
+        "android_client_info": {
+          "package_name": "edu.mis.lecturitas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "106967717391-ce9hkt7nhlvjmg9jirt4fnce2abqpcat.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMgqMkAS5ijlN24TJbRYj5xZS2i91S1t0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "106967717391-ce9hkt7nhlvjmg9jirt4fnce2abqpcat.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
