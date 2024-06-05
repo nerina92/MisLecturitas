@@ -57,6 +57,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
+    implementation("androidx.compose.ui:ui:1.6.7")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.6.6")
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
@@ -66,6 +68,10 @@ dependencies {
     implementation ("io.insert-koin:koin-android:3.3.3")
     implementation("io.insert-koin:koin-core:3.3.3")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
+
+    //Coil
+    implementation(libs.coil.compose)
+
 
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.8.1"))

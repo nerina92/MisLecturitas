@@ -9,7 +9,7 @@ class Usuario: Serializable{
     var name : String = ""
     var mail : String? = ""
     var tipo : Int = 0
-    var state : Boolean = true
+    var state : Boolean? = true
 
     constructor()
 
@@ -29,7 +29,7 @@ class Usuario: Serializable{
     }
 
     override fun toString(): String {
-        return "Usuario(id=$idUser, user='$user', name='$name')"
+        return "Usuario(id=$idUser, user='$user', name='$name, password='$pasword', mail='$mail', tipo=$tipo, state=$state')"
     }
 
 }

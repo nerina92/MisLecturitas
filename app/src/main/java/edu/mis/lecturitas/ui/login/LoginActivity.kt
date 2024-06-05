@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -67,8 +68,10 @@ class LoginActivity : ComponentActivity() {
         viewModel.resultadoLogin.observe(this) {
             if (it != null) {
                 if (it.exito) {
+                    Log.d("Login OK", "Abro main activity")
                     openMainActivity()
                 }else{
+                    Log.d("Error login", "Error login : ${it.mensaje}")
                     Toast.makeText(this, it.mensaje, Toast.LENGTH_SHORT).show()
                 }
             }
@@ -86,9 +89,11 @@ class LoginActivity : ComponentActivity() {
     }
 
     fun openMainActivity(){
+        Log.d("Abro main", "Abro main activity 2")
         val i = Intent(this, MainActivity::class.java)
-        i.putExtra("usuario", viewModel.usuarioLogueado.value)
+        //i.putExtra("usuario", viewModel.usuarioLogueado.value)
         startActivity(i)
+        finish()
     }
 }
 
