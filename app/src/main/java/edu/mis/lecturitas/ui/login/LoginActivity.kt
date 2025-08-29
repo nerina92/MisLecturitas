@@ -146,7 +146,7 @@ fun Login(viewModel: LoginViewModel, appVersion: String) {
             Text(
                 text = "Inicie sesión para continuar",
                 fontFamily = FontFamily(Font(R.font.league_spartan_light)),
-                    fontSize = 18.sp,
+                    fontSize = 20.sp,
                 fontWeight = FontWeight.Medium,
                 color = Color(0xFF8f8e8e),
                 modifier = Modifier
@@ -210,4 +210,13 @@ fun Login(viewModel: LoginViewModel, appVersion: String) {
                 .align(alignment = Alignment.CenterHorizontally)
         )
     }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun loginPreview(){
+    Login(
+        LoginViewModel(),
+        "1.0.0"
+    )
 }
