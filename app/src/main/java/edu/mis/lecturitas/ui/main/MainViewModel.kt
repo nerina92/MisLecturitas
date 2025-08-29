@@ -36,5 +36,13 @@ class MainViewModel: ViewModel(), KoinComponent {
         _goBack.value=false
     }
 
+    fun onClickSalaDe5Play() {
+        TODO("Not yet implemented")
+    }
+
+    fun onClickSalaDe5Read() {
+        TODO("Not yet implemented")
+    }
+
 
 }

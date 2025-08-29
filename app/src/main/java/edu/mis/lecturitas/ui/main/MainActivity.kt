@@ -29,6 +29,8 @@ import edu.mis.lecturitas.ui.MyToolbar
 import edu.mis.lecturitas.ui.bookList.BookListActivity
 import edu.mis.lecturitas.ui.main.ui.theme.MisLecturitasTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModel()
@@ -69,6 +71,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainActivityComposable(viewModel: MainViewModel) {
     val image = painterResource(R.drawable.dibujo5)
+    var showSala5Options = remember { mutableStateOf(false) }
     Box(modifier = Modifier.fillMaxSize()) {
 Column{
     MyToolbar({ viewModel.backPresed() })
@@ -109,7 +112,34 @@ Column{
         ) {
             Text("   SALA DE 5   ",Modifier.padding(10.dp),)
         }
+        fun onClickSalaDe5Read() {
 
+            showSala5Options.value=true
+        }
+        if (showSala5Options.value) {
+            Button(
+                onClick = {
+                    showSala5Options.value = false
+                    viewModel.onClickSalaDe5Play()
+                },
+                Modifier.padding(10.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
+                border = BorderStroke(1.dp, Color.Green)
+            ) {
+                Text("JUGAR", Modifier.padding(10.dp))
+            }
+            Button(
+                onClick = {
+                    showSala5Options.value = false
+                    viewModel.onClickSalaDe5Read()
+                },
+                Modifier.padding(10.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Yellow),
+                border = BorderStroke(1.dp, Color.Yellow)
+            ) {
+                Text("LEER", Modifier.padding(10.dp))
+            }
+        }
     }
 }
 

@@ -72,7 +72,8 @@ class BookListActivity : ComponentActivity() {
         }
         viewModel.openCuento.observe(this){
             if (it!=null){
-                openCuento(it)
+                //openCuento(it)
+                openPlayRead(it)
                 //openWebViewCuento(it)
                 viewModel.setOpenCuentoNull()
             }
@@ -95,6 +96,11 @@ class BookListActivity : ComponentActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    fun openPlayRead(url: String){
+        // Crear una intención para abrir el archivo PDF con la aplicación adecuada
+
     }
 
     fun openWebViewCuento(url:String){
