@@ -1,4 +1,4 @@
-package edu.mis.lecturitas.ui.bookList
+package edu.mis.lecturitas.ui.playread
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,9 +15,9 @@ import androidx.compose.ui.unit.dp
 import edu.mis.lecturitas.ui.MyToolbar
 
 @Composable
-fun PlayRead() {
+fun PlayRead(modifier: Modifier, url: String ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
