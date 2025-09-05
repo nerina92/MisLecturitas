@@ -109,6 +109,15 @@ Column{
         ) {
             Text("   SALA DE 5   ",Modifier.padding(10.dp),)
         }
+        Button(onClick = { viewModel.onClickJugar() },
+            Modifier.padding(30.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Blue,
+            ),
+            border = BorderStroke(1.dp, Color.Blue)
+        ) {
+            Text("   JUGAR   ",Modifier.padding(10.dp),)
+        }
 
     }
 }
