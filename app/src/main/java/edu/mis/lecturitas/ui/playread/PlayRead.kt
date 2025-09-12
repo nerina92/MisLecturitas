@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import edu.mis.lecturitas.ui.MyToolbar
 
 @Composable
-fun PlayRead(modifier: Modifier, url: String ) {
+fun PlayRead(modifier: Modifier = Modifier, url: String? = null) {
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Top,

@@ -32,8 +32,8 @@ import coil.compose.rememberImagePainter
 
 @Composable
 fun BookListComposable(viewModel: BookListViewModel, context: Context) {
-    val listaLibros by viewModel.listaLibros.observeAsState(initial = emptyList())
-    val showProgressBar by viewModel.showProgressBar.observeAsState(initial = false)
+    val listaLibros: ArrayList<Libro>? by viewModel.listaLibros.observeAsState(initial = null)
+    val showProgressBar: Boolean by viewModel.showProgressBar.observeAsState(initial = false)
     val image = painterResource(R.drawable.mis_lecturitas_download)
     Column {
         if (showProgressBar) {
@@ -44,7 +44,7 @@ fun BookListComposable(viewModel: BookListViewModel, context: Context) {
 
             }else{
                 LazyColumn {
-                    listaLibros?.let {list->
+                    listaLibros?.let { list: ArrayList<Libro> ->
                         items(list) { libro ->
                             ItemLibro(libro)
                         }

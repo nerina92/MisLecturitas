@@ -121,8 +121,8 @@ class BookListActivity : ComponentActivity() {
 
 @Composable
 fun BookListComposable(viewModel: BookListViewModel) {
-    val listaLibros by viewModel.listaLibros.observeAsState(initial = emptyList())
-    val showProgressBar by viewModel.showProgressBar.observeAsState(initial = false)
+    val listaLibros: ArrayList<Libro>? by viewModel.listaLibros.observeAsState(initial = null)
+    val showProgressBar: Boolean by viewModel.showProgressBar.observeAsState(initial = false)
     val image = painterResource(R.drawable.mis_lecturitas_download)
 Column{
     MyToolbar({ viewModel.backPresed() })
@@ -136,7 +136,7 @@ Column{
                 Text(text = "No hay libros para mostrar")
             } else {
                 LazyColumn {
-                    listaLibros?.let { list ->
+                    listaLibros?.let { list: ArrayList<Libro> ->
                         items(list) { libro ->
                             BookItem(libro, { viewModel.openCuento.postValue(libro.url) })
                         }

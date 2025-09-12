@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "edu.mis.lecturitas"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "edu.mis.lecturitas"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -43,7 +43,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "2.0.0"
     }
     packaging {
         resources {
@@ -58,28 +58,25 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
-    implementation("androidx.compose.ui:ui:1.6.7")
-    implementation ("androidx.compose.runtime:runtime-livedata:1.6.6")
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation("androidx.compose.runtime:runtime-livedata")
 
     //Koin
-    implementation ("io.insert-koin:koin-android:3.3.3")
-    implementation("io.insert-koin:koin-core:3.3.3")
-    implementation(platform("androidx.compose:compose-bom:2023.03.00"))
+    implementation(libs.koin.android)
+    implementation(libs.koin.core)
 
     //Coil
     implementation(libs.coil.compose)
 
-
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:32.8.1"))
+    implementation(platform(libs.firebase.bom))
     implementation("com.google.firebase:firebase-analytics")
-    implementation ("com.firebaseui:firebase-ui-auth:7.2.0")
+    implementation("com.firebaseui:firebase-ui-auth:7.2.0")
     implementation("com.google.firebase:firebase-database-ktx")
-    implementation("com.google.firebase:firebase-database:20.3.0")
+
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)

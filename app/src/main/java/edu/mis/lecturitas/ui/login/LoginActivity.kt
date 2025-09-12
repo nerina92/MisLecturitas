@@ -48,6 +48,7 @@ import edu.mis.lecturitas.model.Usuario
 import edu.mis.lecturitas.ui.login.ui.theme.MisLecturitasTheme
 import edu.mis.lecturitas.ui.main.MainActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.lifecycle.Observer
 
 
 class LoginActivity : ComponentActivity() {
@@ -81,7 +82,7 @@ class LoginActivity : ComponentActivity() {
     fun getAppVersion(context: Context): String {
         try {
             val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-            return packageInfo.versionName
+            return packageInfo.versionName ?: "N/A"
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
         }

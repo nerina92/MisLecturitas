@@ -1,6 +1,9 @@
 package edu.mis.lecturitas.ui.playread
 
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -11,7 +14,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import edu.mis.lecturitas.R
 import edu.mis.lecturitas.ui.playread.ui.theme.MisLecturitasTheme
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.lifecycle.Observer
 
 class PlayReadActivity : ComponentActivity() {
 
@@ -31,13 +37,12 @@ class PlayReadActivity : ComponentActivity() {
             }
         }
 
-        viewModel.openCuento.observe(this){
-            if (it){
-                openCuento(it)
+        viewModel.openCuento.observe(this, Observer { value ->
+            if (value == true){
+                urlRecibida?.let { openWebViewCuento(it) }
                 viewModel.setOpenCuentoFalse()
             }
-
-        }
+        })
     }
     fun openWebViewCuento(url:String){
         val webView: WebView = findViewById(R.id.my_webview)
