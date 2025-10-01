@@ -3,6 +3,7 @@ package edu.mis.lecturitas.ui.playread
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
@@ -79,7 +80,16 @@ fun PlayReadScreen(url: String) {
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         if (showWebView) {
-            WebViewComponent(modifier = Modifier.padding(innerPadding), url = url)
+            Scaffold(modifier = Modifier.fillMaxSize()) { webViewInnerPadding ->
+                // WebViewComponent(modifier = Modifier.padding(webViewInnerPadding), url = url)
+                AndroidView(
+                    factory = { context ->
+                        WebView(context).apply {
+                            webViewClient = WebViewClient()
+                            loadUrl(url)
+                        }
+                    }, modifier = Modifier.padding(webViewInnerPadding))
+            }
         } else {
             Column(
                 modifier = Modifier
@@ -98,4 +108,24 @@ fun PlayReadScreen(url: String) {
             }
         }
     }
+}
+@Composable
+fun WebViewComponent(modifier: Modifier = Modifier, url: String) {
+    AndroidView(
+        modifier = modifier.fillMaxSize(),
+        factory = { context ->
+            WebView(context).apply {
+                layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+                webViewClient = WebViewClient()
+                settings.javaScriptEnabled = true
+                loadUrl(url)
+            }
+        },
+        update = { webView ->
+            webView.loadUrl(url)
+        }
+    )
 }
