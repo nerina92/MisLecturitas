@@ -13,7 +13,7 @@ val appModule = module{
     viewModel{ MainViewModel() }
     viewModel{ LoginViewModel() }
     viewModel{ BookListViewModel() }
-    viewModel{ PlayReadViewModel() }
+    //viewModel{ PlayReadViewModel() }
     viewModel{ OpcionesViewModel() }
     viewModel{ JuegosViewModel() }
     viewModel{ AudioLibrosViewModel() }

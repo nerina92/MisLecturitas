@@ -39,7 +39,7 @@ class JuegosActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    JuegosActivityComposable(viewModel)
+                    JuegosActivityComposable(viewModel, { openPuzzleActivity() })
                 }
             }
         }
@@ -57,16 +57,23 @@ class JuegosActivity : ComponentActivity() {
                 viewModel.setOpenFormasFalse()
             }
         }
+
+
     }
     
     private fun openFormasActivity() {
         val intent = Intent(this, FormasActivity::class.java)
         startActivity(intent)
     }
+
+    private fun openPuzzleActivity() {
+        val intent = Intent(this, RompecabezasActivity::class.java)
+        startActivity(intent)
+    }
 }
 
 @Composable
-fun JuegosActivityComposable(viewModel: JuegosViewModel) {
+fun JuegosActivityComposable(viewModel: JuegosViewModel, openPuzzleActivity: () -> Unit) {
     val image = painterResource(R.drawable.dibujo5)
     
     Column {
@@ -96,6 +103,14 @@ fun JuegosActivityComposable(viewModel: JuegosViewModel) {
             ) {
                 Text("🔺 FORMAS Y FIGURAS", Modifier.padding(10.dp))
             }
+
+            Button(
+                onClick = { openPuzzleActivity() },
+                modifier = Modifier.padding(30.dp),
+                border = BorderStroke(2.dp, Color.Black)
+            ) {
+                Text(" \uD83E\uDDE9 PUZZLE  ", Modifier.padding(10.dp))
+            }
             
             // Aquí se pueden agregar más juegos en el futuro
             Text(
@@ -111,6 +126,6 @@ fun JuegosActivityComposable(viewModel: JuegosViewModel) {
 @Composable
 fun JuegosPreview() {
     MisLecturitasTheme {
-        JuegosActivityComposable(viewModel = JuegosViewModel())
+        JuegosActivityComposable(viewModel = JuegosViewModel(),{})
     }
 }

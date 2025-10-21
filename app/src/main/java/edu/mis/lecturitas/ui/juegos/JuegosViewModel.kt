@@ -14,8 +14,16 @@ class JuegosViewModel : ViewModel(), KoinComponent {
     val openFormas: MutableLiveData<Boolean>
         get() = _openFormas
 
+    private val _openPuzzle = MutableLiveData<Boolean>(false)
+    val openPuzzle: MutableLiveData<Boolean>
+        get() = _openPuzzle
+
     fun onClickFormas() {
         _openFormas.value = true
+    }
+
+    fun onClickPuzzle() {
+        _openPuzzle.value = true
     }
 
     fun backPresed() {

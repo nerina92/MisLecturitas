@@ -57,6 +57,11 @@
             android:label="Juego de Formas"
             android:theme="@style/Theme.MisLecturitas" />
         <activity
+            android:name=".ui.juegos.RompecabezasActivity"
+            android:exported="false"
+            android:label="Juego de Rompecabezas"
+            android:theme="@style/Theme.MisLecturitas" />
+        <activity
             android:name=".ui.audiolibros.AudioLibrosActivity"
             android:exported="false"
             android:label="Audiolibros"

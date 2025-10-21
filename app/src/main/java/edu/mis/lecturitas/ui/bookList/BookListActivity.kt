@@ -74,8 +74,8 @@ class BookListActivity : ComponentActivity() {
         }
         viewModel.openCuento.observe(this){
             if (it!=null){
-                //openCuento(it)
-                openPlayRead(it)
+                openCuento(it)
+                //openPlayRead(it)
                 //openWebViewCuento(it)
                 viewModel.setOpenCuentoNull()
             }
