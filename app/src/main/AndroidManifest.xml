@@ -39,6 +39,21 @@
             android:name=".ui.main.MainActivity"
             android:exported="false"
             android:label="@string/title_activity_main" />
+        <activity
+            android:name=".ui.opciones.OpcionesActivity"
+            android:exported="false"
+            android:label="Opciones"
+            android:theme="@style/Theme.MisLecturitas" />
+        <activity
+            android:name=".ui.juegos.JuegosActivity"
+            android:exported="false"
+            android:label="Juegos"
+            android:theme="@style/Theme.MisLecturitas" />
+        <activity
+            android:name=".ui.juegos.FormasActivity"
+            android:exported="false"
+            android:label="Juego de Formas"
+            android:theme="@style/Theme.MisLecturitas" />
     </application>
 
 </manifest>

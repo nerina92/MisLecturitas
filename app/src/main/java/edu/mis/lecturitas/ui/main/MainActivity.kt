@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import edu.mis.lecturitas.R
 import edu.mis.lecturitas.ui.MyToolbar
 import edu.mis.lecturitas.ui.bookList.BookListActivity
+import edu.mis.lecturitas.ui.opciones.OpcionesActivity
 import edu.mis.lecturitas.ui.main.ui.theme.MisLecturitasTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.compose.runtime.mutableStateOf
@@ -60,10 +61,22 @@ class MainActivity : ComponentActivity() {
                 viewModel.doneGoback()
             }
         }
+        
+        viewModel.openOpciones.observe(this){
+            if(it) {
+                openOpcionesActivity()
+                viewModel.setOpenOpcionesFalse()
+            }
+        }
     }
     fun openBookListActivity(nivel:Int){
         val i = Intent(this, BookListActivity::class.java)
         i.putExtra("nivel", nivel)
+        startActivity(i)
+    }
+    
+    fun openOpcionesActivity(){
+        val i = Intent(this, OpcionesActivity::class.java)
         startActivity(i)
     }
 }
@@ -113,16 +126,15 @@ Column{
             Text("   SALA DE 5   ",Modifier.padding(10.dp),)
         }
 
-        fun onClickSalaDe5Read() {
 
         Button(onClick = { viewModel.onClickJugar() },
             Modifier.padding(30.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Blue,
             ),
-            border = BorderStroke(1.dp, Color.Blue)
+            border = BorderStroke(1.dp, Color.Magenta)
         ) {
-            Text("   JUGAR   ",Modifier.padding(10.dp),)
+            Text("\uD83C\uDFB2 MODO INTERACTIVO ",Modifier.padding(10.dp),)
         }
 
 
@@ -157,7 +169,7 @@ Column{
 
     }
 
-}
+
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun GreetingPreview() {
