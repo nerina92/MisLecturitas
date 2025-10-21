@@ -12,6 +12,11 @@ class MainViewModel: ViewModel(), KoinComponent {
     val openListBook: MutableLiveData<Int?>
         get() = _openListBook
 
+
+    private val _openJugar = MutableLiveData<Boolean>(false)
+    val openJugar: MutableLiveData<Boolean>
+        get() = _openJugar
+
     private val _goBack = MutableLiveData<Boolean>(false)
     val goBack: MutableLiveData<Boolean>
         get() = _goBack
@@ -25,6 +30,9 @@ class MainViewModel: ViewModel(), KoinComponent {
         _openListBook.value=5
     }
 
+    fun onClickJugar(){
+        _openJugar.value=true
+    }
     fun setOpenListBookNull() {
         _openListBook.value = null
     }
