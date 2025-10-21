@@ -1,5 +1,6 @@
 package edu.mis.lecturitas.di
 
+import edu.mis.lecturitas.ui.audiolibros.AudioLibrosViewModel
 import edu.mis.lecturitas.ui.bookList.BookListViewModel
 import edu.mis.lecturitas.ui.juegos.JuegosViewModel
 import edu.mis.lecturitas.ui.login.LoginViewModel
@@ -16,4 +17,5 @@ val appModule = module{
     viewModel{ PlayReadViewModel() }
     viewModel{ OpcionesViewModel() }
     viewModel{ JuegosViewModel() }
+    viewModel{ AudioLibrosViewModel() }
 }

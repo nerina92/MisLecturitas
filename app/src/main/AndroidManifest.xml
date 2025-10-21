@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".MisLecturitasApplication"
@@ -54,6 +56,17 @@
             android:exported="false"
             android:label="Juego de Formas"
             android:theme="@style/Theme.MisLecturitas" />
+        <activity
+            android:name=".ui.audiolibros.AudioLibrosActivity"
+            android:exported="false"
+            android:label="Audiolibros"
+            android:theme="@style/Theme.MisLecturitas" />
+        <activity
+            android:name=".ui.audiolibros.VideoPlayerActivity"
+            android:exported="false"
+            android:label="Reproductor de Video"
+            android:theme="@style/Theme.MisLecturitas"
+            android:screenOrientation="sensor" />
     </application>
 
 </manifest>

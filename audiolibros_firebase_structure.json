@@ -1,0 +1,46 @@
+{
+  "audiolibros": [
+    {
+      "idAudioLibro": 1,
+      "titulo": "El Cuento de la Princesa",
+      "descripcion": "Una hermosa historia contada por los niños de Sala de 4",
+      "urlVideo": "https://firebasestorage.googleapis.com/v0/b/mis-lecturitas-7b62a.appspot.com/o/audiolibros%2Fprincesa.mp4?alt=media&token=tu-token-aqui",
+      "urlImagen": "https://firebasestorage.googleapis.com/v0/b/mis-lecturitas-7b62a.appspot.com/o/audiolibros%2Fimagenes%2Fprincesa.jpg?alt=media&token=tu-token-aqui",
+      "duracion": "5:30",
+      "nivel": 4,
+      "fechaCreacion": "2024-01-15",
+      "autor": "Grupo de Sala de 4 - Jardín 25 de Mayo",
+      "estado": "activo",
+      "cantReproducciones": 0,
+      "calificacion": 0
+    },
+    {
+      "idAudioLibro": 2,
+      "titulo": "Las Aventuras del Monstruo Feliz",
+      "descripcion": "Los niños de Sala de 3 nos cuentan sobre emociones",
+      "urlVideo": "https://firebasestorage.googleapis.com/v0/b/mis-lecturitas-7b62a.appspot.com/o/audiolibros%2Fmonstruo_feliz.mp4?alt=media&token=tu-token-aqui",
+      "urlImagen": "https://firebasestorage.googleapis.com/v0/b/mis-lecturitas-7b62a.appspot.com/o/audiolibros%2Fimagenes%2Fmonstruo_feliz.jpg?alt=media&token=tu-token-aqui",
+      "duracion": "4:15",
+      "nivel": 3,
+      "fechaCreacion": "2024-01-20",
+      "autor": "Grupo de Sala de 3 - Jardín 25 de Mayo",
+      "estado": "activo",
+      "cantReproducciones": 0,
+      "calificacion": 0
+    },
+    {
+      "idAudioLibro": 3,
+      "titulo": "Elmer y sus Colores",
+      "descripcion": "Los niños de Sala de 5 recrean la historia de Elmer",
+      "urlVideo": "https://firebasestorage.googleapis.com/v0/b/mis-lecturitas-7b62a.appspot.com/o/audiolibros%2Felmer_colores.mp4?alt=media&token=tu-token-aqui",
+      "urlImagen": "https://firebasestorage.googleapis.com/v0/b/mis-lecturitas-7b62a.appspot.com/o/audiolibros%2Fimagenes%2Felmer_colores.jpg?alt=media&token=tu-token-aqui",
+      "duracion": "6:45",
+      "nivel": 5,
+      "fechaCreacion": "2024-01-25",
+      "autor": "Grupo de Sala de 5 - Jardín 25 de Mayo",
+      "estado": "activo",
+      "cantReproducciones": 0,
+      "calificacion": 0
+    }
+  ]
+}
