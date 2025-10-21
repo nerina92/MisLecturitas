@@ -13,9 +13,9 @@ class MainViewModel: ViewModel(), KoinComponent {
         get() = _openListBook
 
 
-    private val _openJugar = MutableLiveData<Boolean>(false)
-    val openJugar: MutableLiveData<Boolean>
-        get() = _openJugar
+    private val _openOpciones = MutableLiveData<Boolean>(false)
+    val openOpciones: MutableLiveData<Boolean>
+        get() = _openOpciones
 
     private val _goBack = MutableLiveData<Boolean>(false)
     val goBack: MutableLiveData<Boolean>
@@ -31,10 +31,14 @@ class MainViewModel: ViewModel(), KoinComponent {
     }
 
     fun onClickJugar(){
-        _openJugar.value=true
+        _openOpciones.value=true
     }
     fun setOpenListBookNull() {
         _openListBook.value = null
+    }
+    
+    fun setOpenOpcionesFalse() {
+        _openOpciones.value = false
     }
 
     fun backPresed(){
