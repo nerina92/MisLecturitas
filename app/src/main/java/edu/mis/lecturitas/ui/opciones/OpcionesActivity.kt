@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import edu.mis.lecturitas.R
 import edu.mis.lecturitas.ui.MyToolbar
+import edu.mis.lecturitas.ui.audiolibros.AudioLibrosActivity
 import edu.mis.lecturitas.ui.juegos.JuegosActivity
 import edu.mis.lecturitas.ui.main.MainActivity
 import edu.mis.lecturitas.ui.main.ui.theme.MisLecturitasTheme
@@ -74,7 +75,9 @@ class OpcionesActivity : ComponentActivity() {
     }
     
     private fun openAudiolibrosActivity() {
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, AudioLibrosActivity::class.java)
+        // Pasar -1 para mostrar todos los audiolibros, o un nivel específico si se desea filtrar
+        intent.putExtra("nivel", -1)
         startActivity(intent)
     }
 }

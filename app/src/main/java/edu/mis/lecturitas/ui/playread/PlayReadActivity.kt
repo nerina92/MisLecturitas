@@ -1,6 +1,8 @@
 package edu.mis.lecturitas.ui.playread
 
+import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
@@ -49,12 +51,26 @@ class PlayReadActivity : ComponentActivity() {
         setContent {
             MisLecturitasTheme {
                 if (urlRecibida != null) {
-                    PlayReadScreen(url = urlRecibida)
+                    PlayReadScreen(
+                        url = urlRecibida,
+                        onOpenCuento = { url -> openCuento(url) }
+                    )
                 } else {
                     // Manejar el caso de URL nula si es necesario
                     Text("Error: URL no encontrada")
                 }
             }
+        }
+    }
+    fun openCuento(url: String){
+        // Crear una intención para abrir el archivo PDF con la aplicación adecuada
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setDataAndType(Uri.parse(url), "application/pdf")
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        try {
+            startActivity(intent)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }
@@ -75,7 +91,10 @@ fun GreetingPreview2() {
     }
 }
 @Composable
-fun PlayReadScreen(url: String) {
+fun PlayReadScreen(
+    url: String,
+    onOpenCuento: (String) -> Unit
+) {
     var showWebView by remember { mutableStateOf(false) }
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -102,7 +121,7 @@ fun PlayReadScreen(url: String) {
                     Text("Jugar")
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                Button(onClick = { showWebView = true }) {
+                Button(onClick = { onOpenCuento(url) }) {
                     Text("Leer")
                 }
             }
