@@ -48,6 +48,7 @@ import edu.mis.lecturitas.model.Usuario
 import edu.mis.lecturitas.ui.login.ui.theme.MisLecturitasTheme
 import edu.mis.lecturitas.ui.main.MainActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.lifecycle.Observer
 
 
 class LoginActivity : ComponentActivity() {
@@ -81,7 +82,7 @@ class LoginActivity : ComponentActivity() {
     fun getAppVersion(context: Context): String {
         try {
             val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-            return packageInfo.versionName
+            return packageInfo.versionName ?: "N/A"
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
         }
@@ -146,7 +147,7 @@ fun Login(viewModel: LoginViewModel, appVersion: String) {
             Text(
                 text = "Inicie sesión para continuar",
                 fontFamily = FontFamily(Font(R.font.league_spartan_light)),
-                    fontSize = 18.sp,
+                    fontSize = 20.sp,
                 fontWeight = FontWeight.Medium,
                 color = Color(0xFF8f8e8e),
                 modifier = Modifier
@@ -210,4 +211,13 @@ fun Login(viewModel: LoginViewModel, appVersion: String) {
                 .align(alignment = Alignment.CenterHorizontally)
         )
     }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun loginPreview(){
+    Login(
+        LoginViewModel(),
+        "1.0.0"
+    )
 }

@@ -50,7 +50,9 @@ import edu.mis.lecturitas.R
 import edu.mis.lecturitas.model.Libro
 import edu.mis.lecturitas.ui.MyToolbar
 import edu.mis.lecturitas.ui.bookList.ui.theme.MisLecturitasTheme
+import edu.mis.lecturitas.ui.main.MainActivity
 import edu.mis.lecturitas.ui.main.MainViewModel
+import edu.mis.lecturitas.ui.playread.PlayReadActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class BookListActivity : ComponentActivity() {
@@ -72,7 +74,8 @@ class BookListActivity : ComponentActivity() {
         }
         viewModel.openCuento.observe(this){
             if (it!=null){
-                openCuento(it)
+                //openCuento(it)
+                openPlayRead(it)
                 //openWebViewCuento(it)
                 viewModel.setOpenCuentoNull()
             }
@@ -97,29 +100,29 @@ class BookListActivity : ComponentActivity() {
         }
     }
 
-    fun openWebViewCuento(url:String){
-        val webView: WebView = findViewById(R.id.my_webview)
-        webView.settings.javaScriptEnabled = true
-        webView.webViewClient = object : WebViewClient() {
-            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                super.onPageStarted(view, url, favicon)
-                // Puedes realizar alguna acción cuando la página comienza a cargarse
-            }
-
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-                // Puedes realizar alguna acción cuando la página ha terminado de cargarse
-            }
+    fun openPlayRead(url: String) {
+        // Crear una intención para abrir la PlayReadActivity
+        val intent = Intent(this, PlayReadActivity::class.java).apply {
+            // Añadir la URL como un extra al Intent
+            // Es buena práctica usar una constante para el nombre del extra
+            putExtra("EXTRA_URL", url)
         }
-        // Cargar la URL directa del PDF en el WebView
-        webView.loadUrl(url)
+        try {
+            startActivity(intent)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            // Considera mostrar un mensaje al usuario si ocurre un error
+        }
     }
+
+
+
 }
 
 @Composable
 fun BookListComposable(viewModel: BookListViewModel) {
-    val listaLibros by viewModel.listaLibros.observeAsState(initial = emptyList())
-    val showProgressBar by viewModel.showProgressBar.observeAsState(initial = false)
+    val listaLibros: ArrayList<Libro>? by viewModel.listaLibros.observeAsState(initial = null)
+    val showProgressBar: Boolean by viewModel.showProgressBar.observeAsState(initial = false)
     val image = painterResource(R.drawable.mis_lecturitas_download)
 Column{
     MyToolbar({ viewModel.backPresed() })
@@ -133,7 +136,7 @@ Column{
                 Text(text = "No hay libros para mostrar")
             } else {
                 LazyColumn {
-                    listaLibros?.let { list ->
+                    listaLibros?.let { list: ArrayList<Libro> ->
                         items(list) { libro ->
                             BookItem(libro, { viewModel.openCuento.postValue(libro.url) })
                         }
