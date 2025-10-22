@@ -22,6 +22,11 @@ class LoginViewModel : ViewModel(), KoinComponent {
     private val _usuarioLogeado = MutableLiveData<Usuario?>()
     val usuarioLogueado: MutableLiveData<Usuario?>
         get() = _usuarioLogeado
+
+    private val _ingresarInvitado = MutableLiveData<Boolean>()
+    val ingresarInvitado: MutableLiveData<Boolean>
+        get() = _ingresarInvitado
+
     fun consultarUsuario(userIngresado:Usuario) {
        CoroutineScope(Dispatchers.IO).launch {
             val database = FirebaseDatabase.getInstance()
@@ -62,5 +67,9 @@ class LoginViewModel : ViewModel(), KoinComponent {
                 }
             })
         }
+    }
+
+    fun ingresarComoInvitado(value: Boolean) {
+        _ingresarInvitado.value = value
     }
 }

@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import edu.mis.lecturitas.R
 import edu.mis.lecturitas.ui.playread.ui.theme.MisLecturitasTheme
+import edu.mis.lecturitas.ui.juegos.RompecabezasActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.lifecycle.Observer
 
@@ -39,21 +40,26 @@ class PlayReadActivity : ComponentActivity() {
 
     companion object {
         const val EXTRA_URL = "EXTRA_URL"
+        const val EXTRA_IMAGE = "EXTRA_IMAGE"
     }
     private val viewModel: PlayReadViewModel by viewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        //obtener url
+        //obtener url e imagen
         val urlRecibida: String? = intent.getStringExtra("EXTRA_URL")
+        val imagenRecibida: String? = intent.getStringExtra("EXTRA_IMAGE")
         Log.d("PlayReadActivity", "URL Recibida: $urlRecibida")
+        Log.d("PlayReadActivity", "Imagen Recibida: $imagenRecibida")
 
         setContent {
             MisLecturitasTheme {
                 if (urlRecibida != null) {
                     PlayReadScreen(
                         url = urlRecibida,
-                        onOpenCuento = { url -> openCuento(url) }
+                        //imagen = imagenRecibida,
+                        onOpenCuento = { url -> openCuento(url) },
+                        //onJugar = { url, imagen -> openRompecabezas(url, imagen) }
                     )
                 } else {
                     // Manejar el caso de URL nula si es necesario
@@ -67,6 +73,19 @@ class PlayReadActivity : ComponentActivity() {
         val intent = Intent(Intent.ACTION_VIEW)
         intent.setDataAndType(Uri.parse(url), "application/pdf")
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        try {
+            startActivity(intent)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun openRompecabezas(url: String?, imagen: String?) {
+        // Crear una intención para abrir el juego de rompecabezas
+        val intent = Intent(this, RompecabezasActivity::class.java).apply {
+            putExtra("EXTRA_URL", url)
+            putExtra("EXTRA_IMAGE", imagen)
+        }
         try {
             startActivity(intent)
         } catch (e: Exception) {

@@ -10,7 +10,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -122,8 +125,9 @@ Column{
         Image(
             painter = image,
             contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            contentScale = ContentScale.Inside,
+            modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth()
+                .fillMaxHeight(0.35f)
         )
         //FilledButton(onClick = { viewModel.onClickSalaDe3()}, text = "SALA DE 3", color = Color.Red, borderColor = Color.Red)
         //FilledButton(onClick = { viewModel.onClickSalaDe4() }, text = "SALA DE 4", color = Color.Red, borderColor = Color.Blue )
@@ -143,7 +147,7 @@ Column{
             }
         }else{
             Button(onClick = { viewModel.onClickSalaDe3() },
-                Modifier.padding(30.dp),
+                Modifier.padding(20.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Red,
                 ),
@@ -152,7 +156,7 @@ Column{
                 Text("   SALA DE 3   ",Modifier.padding(10.dp),)
             }
             Button(onClick = { viewModel.onClickSalaDe4() },
-                Modifier.padding(30.dp),
+                Modifier.padding(20.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Red,
                 ),
@@ -161,7 +165,7 @@ Column{
                 Text("   SALA DE 4   ",Modifier.padding(10.dp),)
             }
             Button(onClick = { viewModel.onClickSalaDe5() },
-                Modifier.padding(30.dp),
+                Modifier.padding(20.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Blue,
                 ),

@@ -8,7 +8,9 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -87,7 +89,7 @@ fun JuegosActivityComposable(viewModel: JuegosViewModel, openPuzzleActivity: () 
                 painter = image,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = 16.dp).fillMaxHeight(0.35f)
             )
             
             Text(

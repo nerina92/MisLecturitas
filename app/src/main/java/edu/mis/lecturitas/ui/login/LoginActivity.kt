@@ -12,6 +12,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -88,7 +89,14 @@ class LoginActivity : ComponentActivity() {
                 }
             }
         }
+        viewModel.ingresarInvitado.observe(this){
+            if(it){
+                viewModel.ingresarComoInvitado(false)
+                openMainActivity()
+            }
+        }
     }
+
 
     fun getAppVersion(context: Context): String {
         try {
@@ -138,6 +146,7 @@ fun Login(viewModel: LoginViewModel, appVersion: String) {
             painter = image,
             contentDescription = null,
             contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxHeight(0.25f)
         )
         Column(
             modifier = Modifier
@@ -204,6 +213,25 @@ fun Login(viewModel: LoginViewModel, appVersion: String) {
             ) {
                 Text(
                     "Ingresar",
+                    color = Color(0xFFFFffff),
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(horizontal = 30.dp, vertical = 1.dp)
+                )
+            }
+            FilledTonalButton(
+                onClick = {
+                    viewModel.ingresarComoInvitado(true)
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Black,
+                    contentColor = Color.White
+                ),
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(alignment = Alignment.CenterHorizontally)
+            ) {
+                Text(
+                    "Ingresar como invitado",
                     color = Color(0xFFFFffff),
                     fontSize = 16.sp,
                     modifier = Modifier.padding(horizontal = 30.dp, vertical = 1.dp)
