@@ -2,6 +2,7 @@ package edu.mis.lecturitas.ui.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -28,7 +29,13 @@ import edu.mis.lecturitas.R
 import edu.mis.lecturitas.ui.MyToolbar
 import edu.mis.lecturitas.ui.bookList.BookListActivity
 import edu.mis.lecturitas.ui.opciones.OpcionesActivity
+import edu.mis.lecturitas.ui.admin.AdminMainActivity
+import edu.mis.lecturitas.repository.UserRepository
 import edu.mis.lecturitas.ui.main.ui.theme.MisLecturitasTheme
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -68,6 +75,13 @@ class MainActivity : ComponentActivity() {
                 viewModel.setOpenOpcionesFalse()
             }
         }
+        
+        viewModel.openAdmin.observe(this){
+            if(it) {
+                openAdminActivity()
+                viewModel.setOpenAdminFalse()
+            }
+        }
     }
     fun openBookListActivity(nivel:Int){
         val i = Intent(this, BookListActivity::class.java)
@@ -79,12 +93,28 @@ class MainActivity : ComponentActivity() {
         val i = Intent(this, OpcionesActivity::class.java)
         startActivity(i)
     }
+    
+    fun openAdminActivity(){
+        val i = Intent(this, AdminMainActivity::class.java)
+        startActivity(i)
+    }
 }
 
 @Composable
 fun MainActivityComposable(viewModel: MainViewModel) {
     val image = painterResource(R.drawable.dibujo5)
     var showSala5Options = remember { mutableStateOf(false) }
+    var currentUser by remember { mutableStateOf(UserRepository.getCurrentUser()) }
+    val isAdmin = currentUser?.tipo == 1
+    
+    // Observar cambios en el UserRepository
+    LaunchedEffect(Unit) {
+        UserRepository.currentUser.collect { user ->
+            currentUser = user
+            Log.d("MainActivity", "Usuario actual: $user")
+            Log.d("MainActivity", "Es admin: ${user?.tipo == 1}")
+        }
+    }
     Box(modifier = Modifier.fillMaxSize()) {
 Column{
     MyToolbar({ viewModel.backPresed() })
@@ -98,43 +128,58 @@ Column{
         //FilledButton(onClick = { viewModel.onClickSalaDe3()}, text = "SALA DE 3", color = Color.Red, borderColor = Color.Red)
         //FilledButton(onClick = { viewModel.onClickSalaDe4() }, text = "SALA DE 4", color = Color.Red, borderColor = Color.Blue )
         //FilledButton(onClick = { viewModel.onClickSalaDe5() }, text = "SALA DE 5", color = Color.Blue, borderColor = Color.Blue )
-        Button(onClick = { viewModel.onClickSalaDe3() },
-            Modifier.padding(30.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Red,
-            ),
-            border = BorderStroke(1.dp, Color.Red)
-        ) {
-            Text("   SALA DE 3   ",Modifier.padding(10.dp),)
-        }
-        Button(onClick = { viewModel.onClickSalaDe4() },
-            Modifier.padding(30.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Red,
-            ),
-            border = BorderStroke(4.dp, Color.Blue)
-        ) {
-            Text("   SALA DE 4   ",Modifier.padding(10.dp),)
-        }
-        Button(onClick = { viewModel.onClickSalaDe5() },
-            Modifier.padding(30.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Blue,
-            ),
-            border = BorderStroke(1.dp, Color.Blue)
-        ) {
-            Text("   SALA DE 5   ",Modifier.padding(10.dp),)
-        }
+
+        
+        // Botón de administración (solo visible para administradores)
+        if (isAdmin) {
+            Button(onClick = { viewModel.onClickAdmin() },
+                Modifier.padding(30.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF6B46C1), // Púrpura
+                ),
+                border = BorderStroke(1.dp, Color(0xFF6B46C1))
+            ) {
+                Text("⚙️ ADMINISTRACIÓN", Modifier.padding(10.dp))
+            }
+        }else{
+            Button(onClick = { viewModel.onClickSalaDe3() },
+                Modifier.padding(30.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Red,
+                ),
+                border = BorderStroke(1.dp, Color.Red)
+            ) {
+                Text("   SALA DE 3   ",Modifier.padding(10.dp),)
+            }
+            Button(onClick = { viewModel.onClickSalaDe4() },
+                Modifier.padding(30.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Red,
+                ),
+                border = BorderStroke(4.dp, Color.Blue)
+            ) {
+                Text("   SALA DE 4   ",Modifier.padding(10.dp),)
+            }
+            Button(onClick = { viewModel.onClickSalaDe5() },
+                Modifier.padding(30.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Blue,
+                ),
+                border = BorderStroke(1.dp, Color.Blue)
+            ) {
+                Text("   SALA DE 5   ",Modifier.padding(10.dp),)
+            }
 
 
-        Button(onClick = { viewModel.onClickJugar() },
-            Modifier.padding(30.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Blue,
-            ),
-            border = BorderStroke(1.dp, Color.Magenta)
-        ) {
-            Text("\uD83C\uDFB2 MODO INTERACTIVO ",Modifier.padding(10.dp),)
+            Button(onClick = { viewModel.onClickJugar() },
+                Modifier.padding(30.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Blue,
+                ),
+                border = BorderStroke(1.dp, Color.Magenta)
+            ) {
+                Text("\uD83C\uDFB2 MODO INTERACTIVO ",Modifier.padding(10.dp),)
+            }
         }
 
 

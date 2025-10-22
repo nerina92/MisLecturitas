@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import edu.mis.lecturitas.R
 import edu.mis.lecturitas.model.Usuario
-
+import edu.mis.lecturitas.repository.UserRepository
 import edu.mis.lecturitas.ui.login.ui.theme.MisLecturitasTheme
 import edu.mis.lecturitas.ui.main.MainActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -70,6 +70,17 @@ class LoginActivity : ComponentActivity() {
             if (it != null) {
                 if (it.exito) {
                     Log.d("Login OK", "Abro main activity")
+                    // Guardar usuario en el repositorio
+                    val usuario = viewModel.usuarioLogueado.value
+                    Log.d("Login", "Usuario del ViewModel: $usuario")
+                    if (usuario != null) {
+                        Log.d("Login", "Usuario logueado: $usuario")
+                        Log.d("Login", "Tipo de usuario: ${usuario.tipo}")
+                        UserRepository.setCurrentUser(usuario)
+                        Log.d("Login", "Usuario guardado en repositorio")
+                    } else {
+                        Log.e("Login", "ERROR: Usuario es null en el ViewModel")
+                    }
                     openMainActivity()
                 }else{
                     Log.d("Error login", "Error login : ${it.mensaje}")

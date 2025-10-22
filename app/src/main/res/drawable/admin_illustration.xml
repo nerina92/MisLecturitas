@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    
+    <!-- Persona principal -->
+    <path
+        android:fillColor="#4A90E2"
+        android:pathData="M100,40 C110,40 120,50 120,60 L120,80 C120,90 110,100 100,100 C90,100 80,90 80,80 L80,60 C80,50 90,40 100,40 Z" />
+    
+    <!-- Cuerpo -->
+    <path
+        android:fillColor="#6BB6FF"
+        android:pathData="M85,100 L85,140 C85,150 90,155 100,155 C110,155 115,150 115,140 L115,100 Z" />
+    
+    <!-- Brazos múltiples -->
+    <!-- Brazo izquierdo 1 -->
+    <path
+        android:fillColor="#4A90E2"
+        android:pathData="M75,110 C70,105 65,110 70,115 L75,120 C80,115 80,110 75,110 Z" />
+    
+    <!-- Brazo izquierdo 2 -->
+    <path
+        android:fillColor="#4A90E2"
+        android:pathData="M70,120 C65,115 60,120 65,125 L70,130 C75,125 75,120 70,120 Z" />
+    
+    <!-- Brazo derecho 1 -->
+    <path
+        android:fillColor="#4A90E2"
+        android:pathData="M125,110 C130,105 135,110 130,115 L125,120 C120,115 120,110 125,110 Z" />
+    
+    <!-- Brazo derecho 2 -->
+    <path
+        android:fillColor="#4A90E2"
+        android:pathData="M130,120 C135,115 140,120 135,125 L130,130 C125,125 125,120 130,120 Z" />
+    
+    <!-- Iconos alrededor -->
+    <!-- Reloj -->
+    <path
+        android:fillColor="#87CEEB"
+        android:pathData="M50,45 A15,15 0 1,1 50,75 A15,15 0 1,1 50,45 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M50,50 L50,45 M50,50 L55,50" />
+    
+    <!-- Documento -->
+    <path
+        android:fillColor="#9370DB"
+        android:pathData="M150,50 L150,80 L165,80 L165,50 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeWidth="1"
+        android:pathData="M152,55 L163,55 M152,60 L163,60 M152,65 L163,65 M152,70 L163,70 M152,75 L160,75" />
+    
+    <!-- Lista de verificación -->
+    <path
+        android:fillColor="#87CEEB"
+        android:pathData="M50,125 A15,15 0 1,1 50,155 A15,15 0 1,1 50,125 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M45,140 L48,143 L55,136" />
+    
+    <!-- Elementos adicionales - puntos pequeños -->
+    <path
+        android:fillColor="#87CEEB"
+        android:pathData="M50,140 A3,3 0 1,1 50,146 A3,3 0 1,1 50,140 Z" />
+    <path
+        android:fillColor="#87CEEB"
+        android:pathData="M45,135 A3,3 0 1,1 45,141 A3,3 0 1,1 45,135 Z" />
+    <path
+        android:fillColor="#87CEEB"
+        android:pathData="M55,135 A3,3 0 1,1 55,141 A3,3 0 1,1 55,135 Z" />
+</vector>

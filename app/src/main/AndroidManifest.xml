@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".MisLecturitasApplication"
@@ -72,6 +73,21 @@
             android:label="Reproductor de Video"
             android:theme="@style/Theme.MisLecturitas"
             android:screenOrientation="sensor" />
+        <activity
+            android:name=".ui.admin.AdminMainActivity"
+            android:exported="false"
+            android:label="Administración"
+            android:theme="@style/Theme.MisLecturitas" />
+        <activity
+            android:name=".ui.admin.AdminActivity"
+            android:exported="false"
+            android:label="Cargar Contenido"
+            android:theme="@style/Theme.MisLecturitas" />
+        <activity
+            android:name=".ui.admin.ManageContentActivity"
+            android:exported="false"
+            android:label="Gestionar Contenido"
+            android:theme="@style/Theme.MisLecturitas" />
     </application>
 
 </manifest>
