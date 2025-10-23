@@ -57,9 +57,9 @@ class PlayReadActivity : ComponentActivity() {
                 if (urlRecibida != null) {
                     PlayReadScreen(
                         url = urlRecibida,
-                        //imagen = imagenRecibida,
+                        imagen = imagenRecibida,
                         onOpenCuento = { url -> openCuento(url) },
-                        //onJugar = { url, imagen -> openRompecabezas(url, imagen) }
+                        onJugar = { url, imagen -> openRompecabezas(url, imagen) }
                     )
                 } else {
                     // Manejar el caso de URL nula si es necesario
@@ -112,7 +112,9 @@ fun GreetingPreview2() {
 @Composable
 fun PlayReadScreen(
     url: String,
-    onOpenCuento: (String) -> Unit
+    imagen: String?,
+    onOpenCuento: (String) -> Unit,
+    onJugar: (String?, String?) -> Unit
 ) {
     var showWebView by remember { mutableStateOf(false) }
 
@@ -136,7 +138,7 @@ fun PlayReadScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Button(onClick = { /* TODO: Acción Jugar */ }) {
+                Button(onClick = { onJugar(url, imagen) }) {
                     Text("Jugar")
                 }
                 Spacer(modifier = Modifier.height(8.dp))

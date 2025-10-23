@@ -3,6 +3,7 @@ package edu.mis.lecturitas.ui.juegos
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,8 +15,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -33,10 +33,52 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
 import edu.mis.lecturitas.R
 import java.util.*
-import kotlin.div
-import kotlin.times
+import coil.compose.AsyncImage
+import androidx.compose.ui.res.painterResource
+import coil.ImageLoader
+import coil.request.ImageRequest
+import coil.request.SuccessResult
+import android.graphics.drawable.BitmapDrawable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+
+// Función para cargar imagen desde URL
+suspend fun loadImageFromUrl(url: String, context: android.content.Context): ImageBitmap? {
+    return try {
+        withContext(Dispatchers.IO) {
+            val imageLoader = ImageLoader(context)
+            val request = ImageRequest.Builder(context)
+                .data(url)
+                .build()
+            
+            val result = imageLoader.execute(request)
+            if (result is SuccessResult) {
+                val drawable = result.drawable
+                if (drawable is BitmapDrawable) {
+                    val bitmap = drawable.bitmap
+                    Log.d("ImageLoading", "Imagen cargada exitosamente desde: $url")
+                    bitmap.asImageBitmap()
+                } else {
+                    Log.w("ImageLoading", "Drawable no es BitmapDrawable")
+                    null
+                }
+            } else {
+                Log.w("ImageLoading", "Error en la carga de la imagen")
+                null
+            }
+        }
+    } catch (e: Exception) {
+        Log.e("ImageLoading", "Error loading image from URL: $url", e)
+        null
+    }
+}
 
 class RompecabezasActivity : ComponentActivity() {
+    companion object {
+        const val EXTRA_URL = "EXTRA_URL"
+        const val EXTRA_IMAGE = "EXTRA_IMAGE"
+    }
+    
     private var tts: TextToSpeech? = null
     private lateinit var mpCorrect: MediaPlayer
 
@@ -49,10 +91,15 @@ class RompecabezasActivity : ComponentActivity() {
         }
         mpCorrect = MediaPlayer.create(this, R.raw.correcto)
 
+        // Obtener URL e imagen de los extras
+        val urlRecibida: String? = intent.getStringExtra("EXTRA_URL")
+        val imagenRecibida: String? = intent.getStringExtra("EXTRA_IMAGE")
+        
         setContent {
             MaterialTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     PuzzleScreen(
+                        imageUrl = imagenRecibida,
                         onSpeakerClick = {
                             tts?.speak(
                                 "Toca dos piezas para intercambiarlas y arma el rompecabezas. Puedes cambiar la dificultad.",
@@ -75,11 +122,45 @@ class RompecabezasActivity : ComponentActivity() {
 }
 
 @Composable
-fun PuzzleScreen(onSpeakerClick: () -> Unit, onComplete: () -> Unit) {
+fun PuzzleScreen(
+    imageUrl: String? = null,
+    onSpeakerClick: () -> Unit, 
+    onComplete: () -> Unit
+) {
     val ctx = LocalContext.current
     var gridSize by remember { mutableStateOf(2) }
     var expanded by remember { mutableStateOf(false) }
-    val img = ImageBitmap.imageResource(R.drawable.puzzle)
+    
+    // Imagen por defecto
+    val defaultImg = ImageBitmap.imageResource(R.drawable.puzzle)
+    
+    // Estado para manejar la carga de imagen
+    var loadedImage by remember(imageUrl) { mutableStateOf<ImageBitmap?>(null) }
+    var isLoadingImage by remember(imageUrl) { mutableStateOf(false) }
+    
+    // Cargar imagen desde URL si está disponible
+    LaunchedEffect(imageUrl) {
+        if (imageUrl != null && imageUrl.isNotBlank()) {
+            isLoadingImage = true
+            try {
+                val result = loadImageFromUrl(imageUrl, ctx)
+                loadedImage = result
+                Log.d("PuzzleScreen", "Imagen cargada: ${result != null}")
+            } catch (e: Exception) {
+                Log.e("PuzzleScreen", "Error al cargar imagen", e)
+                loadedImage = null
+            } finally {
+                isLoadingImage = false
+            }
+        } else {
+            loadedImage = null
+            isLoadingImage = false
+        }
+    }
+    
+    // Usar la imagen cargada o la imagen por defecto
+    val img = loadedImage ?: defaultImg
+    
     val slices = remember(gridSize, img) { sliceNxN(img, gridSize) }
     val totalTiles = gridSize * gridSize
     var order by remember { mutableStateOf((0 until totalTiles).toList().shuffled()) }
@@ -97,6 +178,15 @@ fun PuzzleScreen(onSpeakerClick: () -> Unit, onComplete: () -> Unit) {
                 text = "Rompecabezas ${gridSize}×${gridSize}",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
+            )
+        }
+        
+        // Mostrar indicador de carga si se está cargando la imagen
+        if (isLoadingImage) {
+            Text(
+                text = "Cargando imagen del cuento...",
+                fontSize = 14.sp,
+                color = Color.Gray
             )
         }
         Text(

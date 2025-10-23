@@ -81,6 +81,13 @@ class BookListActivity : ComponentActivity() {
             }
 
         }
+        
+        viewModel.openPlayRead.observe(this){
+            if (it!=null){
+                openPlayRead(it.first, it.second)
+                viewModel.setOpenPlayReadNull()
+            }
+        }
         viewModel.goBack.observe(this){
             if(it){
                 onBackPressed()
@@ -100,12 +107,12 @@ class BookListActivity : ComponentActivity() {
         }
     }
 
-    fun openPlayRead(url: String) {
+    fun openPlayRead(url: String?, imagen: String?) {
         // Crear una intención para abrir la PlayReadActivity
         val intent = Intent(this, PlayReadActivity::class.java).apply {
-            // Añadir la URL como un extra al Intent
-            // Es buena práctica usar una constante para el nombre del extra
+            // Añadir la URL y la imagen como extras al Intent
             putExtra("EXTRA_URL", url)
+            putExtra("EXTRA_IMAGE", imagen)
         }
         try {
             startActivity(intent)
@@ -138,7 +145,7 @@ Column{
                 LazyColumn {
                     listaLibros?.let { list: ArrayList<Libro> ->
                         items(list) { libro ->
-                            BookItem(libro, { viewModel.openCuento.postValue(libro.url) })
+                            BookItem(libro, { viewModel.openPlayRead(libro.url, libro.imagen) })
                         }
                     }
 
