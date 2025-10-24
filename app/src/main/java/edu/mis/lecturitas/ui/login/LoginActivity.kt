@@ -12,6 +12,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -44,7 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import edu.mis.lecturitas.R
 import edu.mis.lecturitas.model.Usuario
-
+import edu.mis.lecturitas.repository.UserRepository
 import edu.mis.lecturitas.ui.login.ui.theme.MisLecturitasTheme
 import edu.mis.lecturitas.ui.main.MainActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -70,6 +71,17 @@ class LoginActivity : ComponentActivity() {
             if (it != null) {
                 if (it.exito) {
                     Log.d("Login OK", "Abro main activity")
+                    // Guardar usuario en el repositorio
+                    val usuario = viewModel.usuarioLogueado.value
+                    Log.d("Login", "Usuario del ViewModel: $usuario")
+                    if (usuario != null) {
+                        Log.d("Login", "Usuario logueado: $usuario")
+                        Log.d("Login", "Tipo de usuario: ${usuario.tipo}")
+                        UserRepository.setCurrentUser(usuario)
+                        Log.d("Login", "Usuario guardado en repositorio")
+                    } else {
+                        Log.e("Login", "ERROR: Usuario es null en el ViewModel")
+                    }
                     openMainActivity()
                 }else{
                     Log.d("Error login", "Error login : ${it.mensaje}")
@@ -77,7 +89,14 @@ class LoginActivity : ComponentActivity() {
                 }
             }
         }
+        viewModel.ingresarInvitado.observe(this){
+            if(it){
+                viewModel.ingresarComoInvitado(false)
+                openMainActivity()
+            }
+        }
     }
+
 
     fun getAppVersion(context: Context): String {
         try {
@@ -127,6 +146,7 @@ fun Login(viewModel: LoginViewModel, appVersion: String) {
             painter = image,
             contentDescription = null,
             contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxHeight(0.25f)
         )
         Column(
             modifier = Modifier
@@ -193,6 +213,25 @@ fun Login(viewModel: LoginViewModel, appVersion: String) {
             ) {
                 Text(
                     "Ingresar",
+                    color = Color(0xFFFFffff),
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(horizontal = 30.dp, vertical = 1.dp)
+                )
+            }
+            FilledTonalButton(
+                onClick = {
+                    viewModel.ingresarComoInvitado(true)
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Black,
+                    contentColor = Color.White
+                ),
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(alignment = Alignment.CenterHorizontally)
+            ) {
+                Text(
+                    "Ingresar como invitado",
                     color = Color(0xFFFFffff),
                     fontSize = 16.sp,
                     modifier = Modifier.padding(horizontal = 30.dp, vertical = 1.dp)

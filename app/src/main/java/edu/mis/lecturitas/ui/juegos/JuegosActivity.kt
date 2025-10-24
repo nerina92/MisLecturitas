@@ -8,7 +8,9 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -39,7 +41,7 @@ class JuegosActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    JuegosActivityComposable(viewModel)
+                    JuegosActivityComposable(viewModel, { openPuzzleActivity() })
                 }
             }
         }
@@ -57,16 +59,23 @@ class JuegosActivity : ComponentActivity() {
                 viewModel.setOpenFormasFalse()
             }
         }
+
+
     }
     
     private fun openFormasActivity() {
         val intent = Intent(this, FormasActivity::class.java)
         startActivity(intent)
     }
+
+    private fun openPuzzleActivity() {
+        val intent = Intent(this, RompecabezasActivity::class.java)
+        startActivity(intent)
+    }
 }
 
 @Composable
-fun JuegosActivityComposable(viewModel: JuegosViewModel) {
+fun JuegosActivityComposable(viewModel: JuegosViewModel, openPuzzleActivity: () -> Unit) {
     val image = painterResource(R.drawable.dibujo5)
     
     Column {
@@ -80,7 +89,7 @@ fun JuegosActivityComposable(viewModel: JuegosViewModel) {
                 painter = image,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = 16.dp).fillMaxHeight(0.35f)
             )
             
             Text(
@@ -95,6 +104,14 @@ fun JuegosActivityComposable(viewModel: JuegosViewModel) {
                 border = BorderStroke(2.dp, Color.Black)
             ) {
                 Text("🔺 FORMAS Y FIGURAS", Modifier.padding(10.dp))
+            }
+
+            Button(
+                onClick = { openPuzzleActivity() },
+                modifier = Modifier.padding(30.dp),
+                border = BorderStroke(2.dp, Color.Black)
+            ) {
+                Text(" \uD83E\uDDE9 PUZZLE  ", Modifier.padding(10.dp))
             }
             
             // Aquí se pueden agregar más juegos en el futuro
@@ -111,6 +128,6 @@ fun JuegosActivityComposable(viewModel: JuegosViewModel) {
 @Composable
 fun JuegosPreview() {
     MisLecturitasTheme {
-        JuegosActivityComposable(viewModel = JuegosViewModel())
+        JuegosActivityComposable(viewModel = JuegosViewModel(),{})
     }
 }

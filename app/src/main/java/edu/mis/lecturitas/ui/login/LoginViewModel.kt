@@ -19,9 +19,14 @@ class LoginViewModel : ViewModel(), KoinComponent {
     private val _resultadoLogin = MutableLiveData<ResultadoOperacion?>()
     val resultadoLogin: LiveData<ResultadoOperacion?> = _resultadoLogin
 
-   /* private val _usuarioLogeado = MutableLiveData<Usuario?>()
+    private val _usuarioLogeado = MutableLiveData<Usuario?>()
     val usuarioLogueado: MutableLiveData<Usuario?>
-        get() = _usuarioLogeado*/
+        get() = _usuarioLogeado
+
+    private val _ingresarInvitado = MutableLiveData<Boolean>()
+    val ingresarInvitado: MutableLiveData<Boolean>
+        get() = _ingresarInvitado
+
     fun consultarUsuario(userIngresado:Usuario) {
        CoroutineScope(Dispatchers.IO).launch {
             val database = FirebaseDatabase.getInstance()
@@ -39,22 +44,18 @@ class LoginViewModel : ViewModel(), KoinComponent {
                             Log.d("Firebase read", "Usuario coincident encontrado: $usuario")
                             Log.d("User ingresado", "Usuario ingresado: $userIngresado")
                             if (usuario.pasword == userIngresado.pasword) {
-                               // _usuarioLogeado.postValue(usuario)
+                                _usuarioLogeado.value = usuario
                                 _resultadoLogin.value=ResultadoOperacion(true, "")
                             } else {
-                                _resultadoLogin.postValue(
-                                    ResultadoOperacion(
-                                        false,
-                                        "Contraseña incorrecta"
-                                    )
+                                _resultadoLogin.value = ResultadoOperacion(
+                                    false,
+                                    "Contraseña incorrecta"
                                 )
                             }
                         } else {
-                            _resultadoLogin.postValue(
-                                ResultadoOperacion(
-                                    false,
-                                    "Usuario no encontrado"
-                                )
+                            _resultadoLogin.value = ResultadoOperacion(
+                                false,
+                                "Usuario no encontrado"
                             )
                         }
                     }
@@ -66,5 +67,9 @@ class LoginViewModel : ViewModel(), KoinComponent {
                 }
             })
         }
+    }
+
+    fun ingresarComoInvitado(value: Boolean) {
+        _ingresarInvitado.value = value
     }
 }

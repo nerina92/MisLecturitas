@@ -24,6 +24,14 @@ class BookListViewModel: ViewModel(), KoinComponent {
     private val _openCuento = MutableLiveData<String?>()
     val openCuento: MutableLiveData<String?>
         get() = _openCuento
+        
+    private val _openPlayRead = MutableLiveData<Pair<String?, String?>?>()
+    val openPlayRead: MutableLiveData<Pair<String?, String?>?>
+        get() = _openPlayRead
+        
+    private val _showBookOptions = MutableLiveData<Libro?>()
+    val showBookOptions: MutableLiveData<Libro?>
+        get() = _showBookOptions
     private val _goBack = MutableLiveData<Boolean>(false)
     val goBack: MutableLiveData<Boolean>
         get() = _goBack
@@ -54,6 +62,10 @@ class BookListViewModel: ViewModel(), KoinComponent {
     fun setOpenCuentoNull() {
         _openCuento.value = null
     }
+    
+    fun setOpenPlayReadNull() {
+        _openPlayRead.value = null
+    }
 
     fun backPresed() {
         _goBack.value = true
@@ -61,5 +73,17 @@ class BookListViewModel: ViewModel(), KoinComponent {
 
 fun doneGoBack() {
     _goBack.value = false
+}
+
+fun openPlayRead(url: String?, imagen: String?) {
+    _openPlayRead.value = Pair(url, imagen)
+}
+
+fun showBookOptions(libro: Libro) {
+    _showBookOptions.value = libro
+}
+
+fun hideBookOptions() {
+    _showBookOptions.value = null
 }
 }

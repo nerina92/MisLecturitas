@@ -1,13 +1,9 @@
 package edu.mis.lecturitas.ui.bookList
 
-import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -25,6 +21,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -42,6 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,8 +49,7 @@ import edu.mis.lecturitas.R
 import edu.mis.lecturitas.model.Libro
 import edu.mis.lecturitas.ui.MyToolbar
 import edu.mis.lecturitas.ui.bookList.ui.theme.MisLecturitasTheme
-import edu.mis.lecturitas.ui.main.MainActivity
-import edu.mis.lecturitas.ui.main.MainViewModel
+import edu.mis.lecturitas.ui.juegos.RompecabezasActivity
 import edu.mis.lecturitas.ui.playread.PlayReadActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -74,12 +72,23 @@ class BookListActivity : ComponentActivity() {
         }
         viewModel.openCuento.observe(this){
             if (it!=null){
-                //openCuento(it)
-                openPlayRead(it)
+                openCuento(it)
+                //openPlayRead(it)
                 //openWebViewCuento(it)
                 viewModel.setOpenCuentoNull()
             }
 
+        }
+        
+        viewModel.openPlayRead.observe(this){
+            if (it!=null){
+                openRompecabezas(it.first, it.second)
+                viewModel.setOpenPlayReadNull()
+            }
+        }
+        
+        viewModel.showBookOptions.observe(this){
+            // El Bottom Sheet se manejará en el composable
         }
         viewModel.goBack.observe(this){
             if(it){
@@ -100,12 +109,12 @@ class BookListActivity : ComponentActivity() {
         }
     }
 
-    fun openPlayRead(url: String) {
+    fun openPlayRead(url: String?, imagen: String?) {
         // Crear una intención para abrir la PlayReadActivity
         val intent = Intent(this, PlayReadActivity::class.java).apply {
-            // Añadir la URL como un extra al Intent
-            // Es buena práctica usar una constante para el nombre del extra
+            // Añadir la URL y la imagen como extras al Intent
             putExtra("EXTRA_URL", url)
+            putExtra("EXTRA_IMAGE", imagen)
         }
         try {
             startActivity(intent)
@@ -114,17 +123,131 @@ class BookListActivity : ComponentActivity() {
             // Considera mostrar un mensaje al usuario si ocurre un error
         }
     }
+    fun openRompecabezas(url: String?, imagen: String?) {
+        // Crear una intención para abrir el juego de rompecabezas
+        val intent = Intent(this, RompecabezasActivity::class.java).apply {
+            putExtra("EXTRA_URL", url)
+            putExtra("EXTRA_IMAGE", imagen)
+        }
+        try {
+            startActivity(intent)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
 
+}
 
+// Dialog Modal para las opciones del libro
+@Composable
+fun BookOptionsDialog(
+    libro: Libro?,
+    onDismiss: () -> Unit,
+    onJugar: (String?, String?) -> Unit,
+    onLeer: (String) -> Unit
+) {
+    libro?.let { book ->
+        androidx.compose.material3.AlertDialog(
+            onDismissRequest = onDismiss,
+            title = {
+                Text(
+                    text = "¿Qué quieres hacer?",
+                    fontFamily = FontFamily(Font(R.font.league_spartan_medium)),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    // Imagen del libro
+                    val painter: Painter = rememberImagePainter(
+                        data = book.imagen,
+                        builder = {
+                            size(100, 100)
+                        }
+                    )
+                    
+                    Image(
+                        painter = painter,
+                        contentDescription = "Imagen del libro",
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                    
+                    Text(
+                        text = book.nombre.uppercase(),
+                        fontFamily = FontFamily(Font(R.font.league_spartan_medium)),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black,
+                        textAlign = TextAlign.Center
+                    )
+                    
+                    Text(
+                        text = book.autor,
+                        fontFamily = FontFamily(Font(R.font.league_spartan_light)),
+                        fontSize = 14.sp,
+                        color = Color.Gray,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        onJugar(book.url, book.imagen)
+                        onDismiss()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF4CAF50)
+                    ),
+                    shape = RoundedCornerShape(20.dp)
+                ) {
+                    Text(
+                        text = "🎮 JUGAR",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        onLeer(book.url)
+                        onDismiss()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF2196F3)
+                    ),
+                    shape = RoundedCornerShape(20.dp)
+                ) {
+                    Text(
+                        text = "📖 LEER",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+            }
+        )
+    }
 }
 
 @Composable
 fun BookListComposable(viewModel: BookListViewModel) {
     val listaLibros: ArrayList<Libro>? by viewModel.listaLibros.observeAsState(initial = null)
     val showProgressBar: Boolean by viewModel.showProgressBar.observeAsState(initial = false)
+    val selectedBook: Libro? by viewModel.showBookOptions.observeAsState(initial = null)
     val image = painterResource(R.drawable.mis_lecturitas_download)
-Column{
+    
+    Column {
     MyToolbar({ viewModel.backPresed() })
     Column(modifier = Modifier.fillMaxSize().padding(20.dp), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
 
@@ -138,7 +261,7 @@ Column{
                 LazyColumn {
                     listaLibros?.let { list: ArrayList<Libro> ->
                         items(list) { libro ->
-                            BookItem(libro, { viewModel.openCuento.postValue(libro.url) })
+                            BookItem(libro, { viewModel.showBookOptions(libro) })
                         }
                     }
 
@@ -146,6 +269,18 @@ Column{
             }
         }
     }
+    
+    // Dialog para las opciones del libro
+    BookOptionsDialog(
+        libro = selectedBook,
+        onDismiss = { viewModel.hideBookOptions() },
+        onJugar = { url, imagen -> 
+            viewModel.openPlayRead(url, imagen)
+        },
+        onLeer = { url -> 
+            viewModel.openCuento.postValue(url)
+        }
+    )
     }
 }
 
