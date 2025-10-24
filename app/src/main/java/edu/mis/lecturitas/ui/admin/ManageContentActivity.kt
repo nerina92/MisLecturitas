@@ -33,6 +33,7 @@ import edu.mis.lecturitas.model.Libro
 import edu.mis.lecturitas.ui.MyToolbar
 import edu.mis.lecturitas.ui.main.ui.theme.MisLecturitasTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.Serializable
 
 class ManageContentActivity : ComponentActivity() {
     private val viewModel: ManageContentViewModel by viewModel()
@@ -62,7 +63,12 @@ class ManageContentActivity : ComponentActivity() {
                             startActivity(intent)
                         },
                         onEditClick = { content ->
-                            // TODO: Implementar edición
+                            val intent = Intent(this, AdminActivity::class.java).apply {
+                                putExtra("editData", content)
+                                putExtra("contentType", contentType)
+                                putExtra("nivel", nivel)
+                            }
+                            startActivity(intent)
                         },
                         onDeleteClick = { content ->
                             viewModel.deleteContent(content)
@@ -101,7 +107,7 @@ fun ManageContentScreen(
     contentType: String,
     onBackClick: () -> Unit,
     onAddClick: () -> Unit,
-    onEditClick: (Any) -> Unit,
+    onEditClick: (Serializable) -> Unit,
     onDeleteClick: (Any) -> Unit,
     onSwitchToLibros: () -> Unit,
     onSwitchToAudiolibros: () -> Unit

@@ -1,18 +1,15 @@
 package edu.mis.lecturitas.ui.bookList
 
-import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +21,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -46,22 +45,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.TextButton
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.height
 import edu.mis.lecturitas.R
 import edu.mis.lecturitas.model.Libro
 import edu.mis.lecturitas.ui.MyToolbar
 import edu.mis.lecturitas.ui.bookList.ui.theme.MisLecturitasTheme
 import edu.mis.lecturitas.ui.juegos.RompecabezasActivity
-import edu.mis.lecturitas.ui.main.MainActivity
-import edu.mis.lecturitas.ui.main.MainViewModel
 import edu.mis.lecturitas.ui.playread.PlayReadActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

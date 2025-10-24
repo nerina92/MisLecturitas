@@ -39,6 +39,8 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import android.graphics.drawable.BitmapDrawable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -170,55 +172,72 @@ fun PuzzleScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = "Rompecabezas ${gridSize}×${gridSize}",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
-        
-        // Mostrar indicador de carga si se está cargando la imagen
-        if (isLoadingImage) {
-            Text(
-                text = "Cargando imagen del cuento...",
-                fontSize = 14.sp,
-                color = Color.Gray
-            )
-        }
-        Text(
-            text = "Toca dos piezas para intercambiarlas.",
-            fontSize = 14.sp,
-            color = Color.Gray,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 4.dp)
-        )
-        Button(onClick = onSpeakerClick) {
-            Text(" \uD83D\uDD0A Escuchar instrucciones")
-            //Icon(Icons.Default.Notifications, contentDescription = "Instrucciones")
-        }
-        // Selector de dificultad
-        Box {
-            Button(onClick = { expanded = true }) {
-                Text("Dificultad: ${gridSize}x${gridSize}")
+        Column (
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ){
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "Rompecabezas ${gridSize}×${gridSize}",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
-            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                listOf(2, 3, 4).forEach { size ->
-                    DropdownMenuItem(
-                        text = { Text("${size}x${size}") },
-                        onClick = {
-                            gridSize = size
-                            order = (0 until size * size).toList().shuffled()
-                            selected = null
-                            expanded = false
+
+            // Mostrar indicador de carga si se está cargando la imagen
+            if (isLoadingImage) {
+                Text(
+                    text = "Cargando imagen del cuento...",
+                    fontSize = 14.sp,
+                    color = Color.Gray
+                )
+            }
+            Text(
+                text = "Toca dos piezas para intercambiarlas.",
+                fontSize = 14.sp,
+                color = Color.Gray,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ){
+                Button(modifier = Modifier.fillMaxWidth(0.5f), onClick = onSpeakerClick) {
+                    Text(" \uD83D\uDD0A Escuchar instrucciones", textAlign = TextAlign.Center)
+                    //Icon(Icons.Default.Notifications, contentDescription = "Instrucciones")
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                // Selector de dificultad
+                Box {
+                    Button(modifier = Modifier.fillMaxWidth(1f), onClick = { expanded = true }) {
+                        Text("⚙\uFE0F Dificultad: ${gridSize}x${gridSize}")
+                    }
+                    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                        listOf(2, 3, 4).forEach { size ->
+                            DropdownMenuItem(
+                                //icono configuración
+
+                                text = { Text("${size}x${size}") },
+                                onClick = {
+                                    gridSize = size
+                                    order = (0 until size * size).toList().shuffled()
+                                    selected = null
+                                    expanded = false
+                                }
+                            )
                         }
-                    )
+                    }
                 }
             }
         }
+
+
         PuzzleBoard(
             order = order,
             slices = slices,

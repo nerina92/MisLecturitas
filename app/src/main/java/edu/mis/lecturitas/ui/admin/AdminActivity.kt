@@ -93,6 +93,15 @@ class AdminActivity : ComponentActivity() {
             requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
         
+        // Obtener datos de edición si vienen del intent
+        val editData = intent.getSerializableExtra("editData")
+        val contentType = intent.getStringExtra("contentType") ?: "libro"
+        val nivel = intent.getIntExtra("nivel", 3)
+        
+        if (editData != null) {
+            viewModel.setEditMode(editData, contentType, nivel)
+        }
+        
         setContent {
             MisLecturitasTheme {
                 Surface(
