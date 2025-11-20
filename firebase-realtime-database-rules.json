@@ -1,0 +1,20 @@
+{
+  "rules": {
+    "libros": {
+      ".read": true,
+      ".write": "auth != null",
+      ".indexOn": ["nivel", "idLibro"]
+    },
+    "audiolibros": {
+      ".read": true,
+      ".write": "auth != null",
+      ".indexOn": ["nivel", "idAudioLibro"]
+    },
+    "usuarios": {
+      ".read": true,
+      ".write": false,
+      ".indexOn": ["user"]
+    }
+  }
+}
+

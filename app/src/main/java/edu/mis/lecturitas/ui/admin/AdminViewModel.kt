@@ -4,6 +4,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import edu.mis.lecturitas.model.AudioLibro
@@ -60,6 +61,7 @@ data class AdminUiState(
 
 class AdminViewModel : ViewModel(), KoinComponent {
     
+    private val auth = FirebaseAuth.getInstance()
     private val _uiState = MutableStateFlow(AdminUiState())
     val uiState: StateFlow<AdminUiState> = _uiState.asStateFlow()
     
@@ -181,6 +183,12 @@ class AdminViewModel : ViewModel(), KoinComponent {
     }
     
     fun publishContent() {
+        // Verificar que el usuario esté autenticado
+        if (auth.currentUser == null) {
+            _showMessage.value = "Debes iniciar sesión para publicar contenido"
+            return
+        }
+        
         if (!_uiState.value.isValid) {
             _showMessage.value = "Por favor completa todos los campos requeridos"
             return
