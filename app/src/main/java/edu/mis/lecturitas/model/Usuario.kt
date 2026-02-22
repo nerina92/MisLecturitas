@@ -29,7 +29,7 @@ class Usuario: Serializable{
     }
 
     override fun toString(): String {
-        return "Usuario(id=$idUser, user='$user', name='$name, password='$pasword', mail='$mail', tipo=$tipo, state=$state')"
+        return "Usuario(id=$idUser, user='$user', name='$name', mail='$mail', tipo=$tipo, state=$state)"
     }
 
 }

@@ -10,6 +10,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import edu.mis.lecturitas.model.ResultadoOperacion
 import edu.mis.lecturitas.model.Usuario
+import edu.mis.lecturitas.utils.PasswordHasher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,20 +37,47 @@ class LoginViewModel : ViewModel(), KoinComponent {
 
             query.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (!dataSnapshot.hasChildren()) {
+                        // No se encontró el usuario
+                        _resultadoLogin.value = ResultadoOperacion(
+                            false,
+                            "Usuario no encontrado"
+                        )
+                        return
+                    }
+
                     for (snapshot in dataSnapshot.children) {
-                        var usuario: Usuario? = snapshot.getValue(Usuario::class.java)
-                        //val idUs = dataSnapshot.key
-                        //usuario?.id=idUs
+                        val usuario: Usuario? = snapshot.getValue(Usuario::class.java)
+
                         if (usuario != null) {
-                            Log.d("Firebase read", "Usuario coincident encontrado: $usuario")
-                            Log.d("User ingresado", "Usuario ingresado: $userIngresado")
-                            if (usuario.pasword == userIngresado.pasword) {
+                            Log.d("Firebase read", "Usuario encontrado: ${usuario.user}")
+
+                            // Verificar contraseña de forma segura
+                            val passwordMatch = if (PasswordHasher.isHashed(usuario.pasword)) {
+                                // Contraseña ya está hasheada, usar BCrypt para verificar
+                                PasswordHasher.checkPassword(userIngresado.pasword, usuario.pasword)
+                            } else {
+                                // Contraseña antigua en texto plano (compatibilidad temporal)
+                                // Comparar directamente
+                                val match = usuario.pasword == userIngresado.pasword
+
+                                if (match) {
+                                    // Migrar a hash automáticamente en login exitoso
+                                    val hashedPassword = PasswordHasher.hashPassword(userIngresado.pasword)
+                                    snapshot.ref.child("pasword").setValue(hashedPassword)
+                                    Log.i("Security", "Contraseña migrada a hash para usuario: ${usuario.user}")
+                                }
+
+                                match
+                            }
+
+                            if (passwordMatch) {
                                 _usuarioLogeado.value = usuario
-                                _resultadoLogin.value=ResultadoOperacion(true, "")
+                                _resultadoLogin.value = ResultadoOperacion(true, "")
                             } else {
                                 _resultadoLogin.value = ResultadoOperacion(
                                     false,
-                                    "Contraseña incorrecta"
+                                    "Contraseña incorrecta"
                                 )
                             }
                         } else {
@@ -62,8 +90,11 @@ class LoginViewModel : ViewModel(), KoinComponent {
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
-                    // Manejar errores si es necesario
                     Log.e("Firebase", "Error al realizar la consulta", databaseError.toException())
+                    _resultadoLogin.value = ResultadoOperacion(
+                        false,
+                        "Error de conexión. Intente nuevamente."
+                    )
                 }
             })
         }

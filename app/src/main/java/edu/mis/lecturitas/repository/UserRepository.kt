@@ -10,7 +10,7 @@ object UserRepository {
     val currentUser: StateFlow<Usuario?> = _currentUser.asStateFlow()
     
     fun setCurrentUser(usuario: Usuario?) {
-        println("UserRepository: Estableciendo usuario actual: $usuario")
+        println("UserRepository: Estableciendo usuario actual: ${usuario?.user}")
         _currentUser.value = usuario
         println("UserRepository: Usuario establecido. Tipo: ${usuario?.tipo}, Es admin: ${usuario?.tipo == 1}")
     }

@@ -70,21 +70,18 @@ class LoginActivity : ComponentActivity() {
         viewModel.resultadoLogin.observe(this) {
             if (it != null) {
                 if (it.exito) {
-                    Log.d("Login OK", "Abro main activity")
+                    Log.d("Login", "Login exitoso, abriendo main activity")
                     // Guardar usuario en el repositorio
                     val usuario = viewModel.usuarioLogueado.value
-                    Log.d("Login", "Usuario del ViewModel: $usuario")
                     if (usuario != null) {
-                        Log.d("Login", "Usuario logueado: $usuario")
-                        Log.d("Login", "Tipo de usuario: ${usuario.tipo}")
+                        Log.d("Login", "Usuario autenticado: ${usuario.user}, tipo: ${usuario.tipo}")
                         UserRepository.setCurrentUser(usuario)
-                        Log.d("Login", "Usuario guardado en repositorio")
                     } else {
                         Log.e("Login", "ERROR: Usuario es null en el ViewModel")
                     }
                     openMainActivity()
                 }else{
-                    Log.d("Error login", "Error login : ${it.mensaje}")
+                    Log.d("Login", "Error de autenticación")
                     Toast.makeText(this, it.mensaje, Toast.LENGTH_SHORT).show()
                 }
             }
@@ -109,9 +106,8 @@ class LoginActivity : ComponentActivity() {
     }
 
     fun openMainActivity(){
-        Log.d("Abro main", "Abro main activity 2")
+        Log.d("Login", "Navegando a MainActivity")
         val i = Intent(this, MainActivity::class.java)
-        //i.putExtra("usuario", viewModel.usuarioLogueado.value)
         startActivity(i)
         finish()
     }
