@@ -35,6 +35,7 @@ import edu.mis.lecturitas.ui.opciones.OpcionesActivity
 import edu.mis.lecturitas.ui.admin.AdminMainActivity
 import edu.mis.lecturitas.repository.UserRepository
 import edu.mis.lecturitas.ui.main.ui.theme.MisLecturitasTheme
+import edu.mis.lecturitas.ui.gamification.ProfileActivity
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -85,20 +86,32 @@ class MainActivity : ComponentActivity() {
                 viewModel.setOpenAdminFalse()
             }
         }
+
+        viewModel.openProfile.observe(this){
+            if(it) {
+                openProfileActivity()
+                viewModel.setOpenProfileFalse()
+            }
+        }
     }
     fun openBookListActivity(nivel:Int){
         val i = Intent(this, BookListActivity::class.java)
         i.putExtra("nivel", nivel)
         startActivity(i)
     }
-    
+
     fun openOpcionesActivity(){
         val i = Intent(this, OpcionesActivity::class.java)
         startActivity(i)
     }
-    
+
     fun openAdminActivity(){
         val i = Intent(this, AdminMainActivity::class.java)
+        startActivity(i)
+    }
+
+    fun openProfileActivity(){
+        val i = Intent(this, ProfileActivity::class.java)
         startActivity(i)
     }
 }
@@ -122,12 +135,28 @@ fun MainActivityComposable(viewModel: MainViewModel) {
 Column{
     MyToolbar({ viewModel.backPresed() })
     Column (modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceEvenly, horizontalAlignment = Alignment.CenterHorizontally) {
+
+        // Botón de perfil (esquina superior derecha)
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Button(
+                onClick = { viewModel.onClickProfile() },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFFFD700), // Dorado
+                )
+            ) {
+                Text("👤 Mi Perfil", color = Color.Black)
+            }
+        }
+
         Image(
             painter = image,
             contentDescription = null,
             contentScale = ContentScale.Inside,
             modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth()
-                .fillMaxHeight(0.35f)
+                .fillMaxHeight(0.30f)
         )
         //FilledButton(onClick = { viewModel.onClickSalaDe3()}, text = "SALA DE 3", color = Color.Red, borderColor = Color.Red)
         //FilledButton(onClick = { viewModel.onClickSalaDe4() }, text = "SALA DE 4", color = Color.Red, borderColor = Color.Blue )

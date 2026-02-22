@@ -88,6 +88,21 @@
             android:exported="false"
             android:label="Gestionar Contenido"
             android:theme="@style/Theme.MisLecturitas" />
+        <activity
+            android:name=".ui.gamification.ProfileActivity"
+            android:exported="false"
+            android:label="Mi Perfil"
+            android:theme="@style/Theme.MisLecturitas" />
+        <activity
+            android:name=".ui.gamification.AchievementsActivity"
+            android:exported="false"
+            android:label="Mis Logros"
+            android:theme="@style/Theme.MisLecturitas" />
+        <activity
+            android:name=".ui.gamification.AvatarCustomizerActivity"
+            android:exported="false"
+            android:label="Personalizar Avatar"
+            android:theme="@style/Theme.MisLecturitas" />
     </application>
 
 </manifest>

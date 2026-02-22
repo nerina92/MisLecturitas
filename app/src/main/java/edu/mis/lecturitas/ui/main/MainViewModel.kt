@@ -24,6 +24,11 @@ class MainViewModel: ViewModel(), KoinComponent {
     private val _openAdmin = MutableLiveData<Boolean>(false)
     val openAdmin: MutableLiveData<Boolean>
         get() = _openAdmin
+
+    private val _openProfile = MutableLiveData<Boolean>(false)
+    val openProfile: MutableLiveData<Boolean>
+        get() = _openProfile
+
     fun onClickSalaDe3(){
        _openListBook.value=3
     }
@@ -41,16 +46,25 @@ class MainViewModel: ViewModel(), KoinComponent {
     fun onClickAdmin(){
         _openAdmin.value=true
     }
+
+    fun onClickProfile(){
+        _openProfile.value=true
+    }
+
     fun setOpenListBookNull() {
         _openListBook.value = null
     }
-    
+
     fun setOpenOpcionesFalse() {
         _openOpciones.value = false
     }
-    
+
     fun setOpenAdminFalse() {
         _openAdmin.value = false
+    }
+
+    fun setOpenProfileFalse() {
+        _openProfile.value = false
     }
 
     fun backPresed(){
