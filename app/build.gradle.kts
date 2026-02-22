@@ -83,6 +83,9 @@ dependencies {
     implementation("androidx.media3:media3-ui:1.2.1")
     implementation("androidx.media3:media3-common:1.2.1")
 
+    // Security - Password hashing
+    implementation("org.mindrot:jbcrypt:0.4")
+
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)

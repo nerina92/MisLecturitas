@@ -1,0 +1,37 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Por defecto, negar todo
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+
+    // Libros - Lectura para usuarios autenticados, escritura solo admins
+    match /libros/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null &&
+                     firestore.get(/databases/(default)/documents/usuarios/$(request.auth.uid)).data.tipo == 1;
+    }
+
+    // Audiolibros - Lectura para usuarios autenticados, escritura solo admins
+    match /audiolibros/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null &&
+                     firestore.get(/databases/(default)/documents/usuarios/$(request.auth.uid)).data.tipo == 1;
+    }
+
+    // Juegos - Lectura para usuarios autenticados, escritura solo admins
+    match /juegos/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null &&
+                     firestore.get(/databases/(default)/documents/usuarios/$(request.auth.uid)).data.tipo == 1;
+    }
+
+    // Imágenes de avatares de usuarios (si se implementa subida)
+    match /avatars/{userId}/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
