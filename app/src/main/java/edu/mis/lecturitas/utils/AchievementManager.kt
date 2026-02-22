@@ -28,7 +28,7 @@ object AchievementManager {
             }
 
             // Verificar si se cumplió el requisito
-            val requirement Met = when (achievement.type) {
+            val requirementMet = when (achievement.type) {
                 AchievementType.BOOKS -> progress.booksRead >= achievement.requirement
                 AchievementType.AUDIOBOOKS -> progress.audiobooksListened >= achievement.requirement
                 AchievementType.GAMES -> progress.gamesCompleted >= achievement.requirement

@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
  */
 class AchievementsViewModel(
     private val gamificationRepository: GamificationRepository = GamificationRepository(),
-    private val userRepository: UserRepository = UserRepository()
+    private val userRepository: UserRepository = UserRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<AchievementsUiState>(AchievementsUiState.Loading)

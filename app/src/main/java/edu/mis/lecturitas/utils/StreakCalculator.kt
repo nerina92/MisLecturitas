@@ -42,7 +42,7 @@ object StreakCalculator {
         val daysDifference = ChronoUnit.DAYS.between(lastDate, today).toInt()
 
         return when {
-            daysDifference == 0L -> {
+            daysDifference == 0 -> {
                 // Misma fecha, no incrementar racha
                 StreakUpdate(
                     newStreak = currentStreak,
@@ -50,7 +50,7 @@ object StreakCalculator {
                     streakStatus = StreakStatus.SAME_DAY
                 )
             }
-            daysDifference == 1L -> {
+            daysDifference == 1 -> {
                 // Día consecutivo, incrementar racha
                 StreakUpdate(
                     newStreak = currentStreak + 1,
@@ -91,7 +91,7 @@ object StreakCalculator {
         }
 
         val daysDifference = ChronoUnit.DAYS.between(lastDate, today).toInt()
-        return daysDifference == 0L // Hoy todavía, pero se acerca el límite
+        return daysDifference == 0 // Hoy todavía, pero se acerca el límite
     }
 
     /**

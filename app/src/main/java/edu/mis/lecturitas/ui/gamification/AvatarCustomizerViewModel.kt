@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
  */
 class AvatarCustomizerViewModel(
     private val gamificationRepository: GamificationRepository = GamificationRepository(),
-    private val userRepository: UserRepository = UserRepository()
+    private val userRepository: UserRepository = UserRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<AvatarCustomizerUiState>(AvatarCustomizerUiState.Loading)
