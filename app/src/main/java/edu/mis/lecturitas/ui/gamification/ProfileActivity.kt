@@ -191,7 +191,17 @@ fun ProfileContent(
             onViewAllClick = onViewAllAchievementsClick
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Build Version Info
+        Text(
+            text = "Versión: ${edu.mis.lecturitas.BuildConfig.VERSION_NAME}",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.alpha(0.6f)
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
     }
 }
 

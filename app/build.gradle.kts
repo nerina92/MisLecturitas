@@ -5,6 +5,16 @@ plugins {
     alias(libs.plugins.kotlinCompose)
 }
 
+// Función para obtener el commit SHA corto para versionado
+fun getGitHash(): String {
+    return try {
+        val process = Runtime.getRuntime().exec("git rev-parse --short HEAD")
+        process.inputStream.bufferedReader().readText().trim()
+    } catch (e: Exception) {
+        "unknown"
+    }
+}
+
 android {
     namespace = "edu.mis.lecturitas"
     compileSdk = 35
@@ -13,8 +23,12 @@ android {
         applicationId = "edu.mis.lecturitas"
         minSdk = 23
         targetSdk = 35
-        versionCode = 2
-        versionName = "2.0"
+        versionCode = 3
+        versionName = "2.1-${getGitHash()}"
+
+        // Agregar el git hash como campo de build para acceder desde código
+        buildConfigField("String", "GIT_HASH", "\"${getGitHash()}\"")
+        buildConfigField("String", "BUILD_TIME", "\"${System.currentTimeMillis()}\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -41,6 +55,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true  // Habilitar BuildConfig para acceder a GIT_HASH
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "2.0.0"
@@ -99,4 +114,11 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+// Task para imprimir la versión (usado por GitHub Actions)
+tasks.register("printVersionName") {
+    doLast {
+        println(android.defaultConfig.versionName)
+    }
 }
