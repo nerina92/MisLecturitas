@@ -37,9 +37,11 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.lifecycle.Observer
 import edu.mis.lecturitas.repository.GamificationRepository
 import edu.mis.lecturitas.repository.UserRepository
+import edu.mis.lecturitas.utils.ActivityType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.first
 
 class PlayReadActivity : ComponentActivity() {
 
@@ -95,11 +97,28 @@ class PlayReadActivity : ComponentActivity() {
         if (currentUser != null && !currentUser.user.equals("invitado", ignoreCase = true)) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    gamificationRepository.recordActivity(
-                        userId = currentUser.user,
-                        activityType = "BOOK"
-                    )
-                    Log.d("Gamification", "Libro registrado para usuario: ${currentUser.user}")
+                    // Obtener progreso actual del usuario
+                    val currentProgress = gamificationRepository.getUserProgress(currentUser.user).first()
+
+                    if (currentProgress != null) {
+                        gamificationRepository.recordActivity(
+                            userId = currentUser.user,
+                            activityType = ActivityType.BOOK_READ,
+                            currentProgress = currentProgress
+                        )
+                        Log.d("Gamification", "Libro registrado para usuario: ${currentUser.user}")
+                    } else {
+                        // Inicializar progreso si no existe
+                        gamificationRepository.initializeUserProgress(currentUser.user)
+                        val newProgress = gamificationRepository.getUserProgress(currentUser.user).first()
+                        if (newProgress != null) {
+                            gamificationRepository.recordActivity(
+                                userId = currentUser.user,
+                                activityType = ActivityType.BOOK_READ,
+                                currentProgress = newProgress
+                            )
+                        }
+                    }
                 } catch (e: Exception) {
                     Log.e("Gamification", "Error al registrar libro", e)
                 }

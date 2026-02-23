@@ -45,8 +45,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import edu.mis.lecturitas.repository.GamificationRepository
 import edu.mis.lecturitas.repository.UserRepository
+import edu.mis.lecturitas.utils.ActivityType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.first
 
 // Función para cargar imagen desde URL
 suspend fun loadImageFromUrl(url: String, context: android.content.Context): ImageBitmap? {
@@ -56,7 +58,7 @@ suspend fun loadImageFromUrl(url: String, context: android.content.Context): Ima
             val request = ImageRequest.Builder(context)
                 .data(url)
                 .build()
-            
+
             val result = imageLoader.execute(request)
             if (result is SuccessResult) {
                 val drawable = result.drawable
@@ -131,11 +133,28 @@ class RompecabezasActivity : ComponentActivity() {
         if (currentUser != null && !currentUser.user.equals("invitado", ignoreCase = true)) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    gamificationRepository.recordActivity(
-                        userId = currentUser.user,
-                        activityType = "GAME"
-                    )
-                    Log.d("Gamification", "Juego registrado para usuario: ${currentUser.user}")
+                    // Obtener progreso actual del usuario
+                    val currentProgress = gamificationRepository.getUserProgress(currentUser.user).first()
+
+                    if (currentProgress != null) {
+                        gamificationRepository.recordActivity(
+                            userId = currentUser.user,
+                            activityType = ActivityType.GAME_COMPLETED,
+                            currentProgress = currentProgress
+                        )
+                        Log.d("Gamification", "Juego registrado para usuario: ${currentUser.user}")
+                    } else {
+                        // Inicializar progreso si no existe
+                        gamificationRepository.initializeUserProgress(currentUser.user)
+                        val newProgress = gamificationRepository.getUserProgress(currentUser.user).first()
+                        if (newProgress != null) {
+                            gamificationRepository.recordActivity(
+                                userId = currentUser.user,
+                                activityType = ActivityType.GAME_COMPLETED,
+                                currentProgress = newProgress
+                            )
+                        }
+                    }
                 } catch (e: Exception) {
                     Log.e("Gamification", "Error al registrar juego", e)
                 }
@@ -154,20 +173,20 @@ class RompecabezasActivity : ComponentActivity() {
 @Composable
 fun PuzzleScreen(
     imageUrl: String? = null,
-    onSpeakerClick: () -> Unit, 
+    onSpeakerClick: () -> Unit,
     onComplete: () -> Unit
 ) {
     val ctx = LocalContext.current
     var gridSize by remember { mutableStateOf(2) }
     var expanded by remember { mutableStateOf(false) }
-    
+
     // Imagen por defecto
     val defaultImg = ImageBitmap.imageResource(R.drawable.puzzle)
-    
+
     // Estado para manejar la carga de imagen
     var loadedImage by remember(imageUrl) { mutableStateOf<ImageBitmap?>(null) }
     var isLoadingImage by remember(imageUrl) { mutableStateOf(false) }
-    
+
     // Cargar imagen desde URL si está disponible
     LaunchedEffect(imageUrl) {
         if (imageUrl != null && imageUrl.isNotBlank()) {
@@ -187,10 +206,10 @@ fun PuzzleScreen(
             isLoadingImage = false
         }
     }
-    
+
     // Usar la imagen cargada o la imagen por defecto
     val img = loadedImage ?: defaultImg
-    
+
     val slices = remember(gridSize, img) { sliceNxN(img, gridSize) }
     val totalTiles = gridSize * gridSize
     var order by remember { mutableStateOf((0 until totalTiles).toList().shuffled()) }
@@ -237,14 +256,14 @@ fun PuzzleScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ){
                 Button(modifier = Modifier.fillMaxWidth(0.5f), onClick = onSpeakerClick) {
-                    Text(" \uD83D\uDD0A Escuchar instrucciones", textAlign = TextAlign.Center)
+                    Text(" 🔊 Escuchar instrucciones", textAlign = TextAlign.Center)
                     //Icon(Icons.Default.Notifications, contentDescription = "Instrucciones")
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 // Selector de dificultad
                 Box {
                     Button(modifier = Modifier.fillMaxWidth(1f), onClick = { expanded = true }) {
-                        Text("⚙\uFE0F Dificultad: ${gridSize}x${gridSize}")
+                        Text("⚙️ Dificultad: ${gridSize}x${gridSize}")
                     }
                     DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                         listOf(2, 3, 4).forEach { size ->
@@ -424,4 +443,3 @@ fun PuzzleTile(
         }
     }
 }
-

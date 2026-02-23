@@ -27,9 +27,11 @@ import edu.mis.lecturitas.ui.MyToolbar
 import edu.mis.lecturitas.ui.main.ui.theme.MisLecturitasTheme
 import edu.mis.lecturitas.repository.GamificationRepository
 import edu.mis.lecturitas.repository.UserRepository
+import edu.mis.lecturitas.utils.ActivityType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.first
 
 class VideoPlayerActivity : ComponentActivity() {
 
@@ -83,11 +85,28 @@ class VideoPlayerActivity : ComponentActivity() {
         if (currentUser != null && !currentUser.user.equals("invitado", ignoreCase = true)) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    gamificationRepository.recordActivity(
-                        userId = currentUser.user,
-                        activityType = "AUDIOBOOK"
-                    )
-                    Log.d("Gamification", "Audiolibro registrado para usuario: ${currentUser.user}")
+                    // Obtener progreso actual del usuario
+                    val currentProgress = gamificationRepository.getUserProgress(currentUser.user).first()
+
+                    if (currentProgress != null) {
+                        gamificationRepository.recordActivity(
+                            userId = currentUser.user,
+                            activityType = ActivityType.AUDIOBOOK_LISTENED,
+                            currentProgress = currentProgress
+                        )
+                        Log.d("Gamification", "Audiolibro registrado para usuario: ${currentUser.user}")
+                    } else {
+                        // Inicializar progreso si no existe
+                        gamificationRepository.initializeUserProgress(currentUser.user)
+                        val newProgress = gamificationRepository.getUserProgress(currentUser.user).first()
+                        if (newProgress != null) {
+                            gamificationRepository.recordActivity(
+                                userId = currentUser.user,
+                                activityType = ActivityType.AUDIOBOOK_LISTENED,
+                                currentProgress = newProgress
+                            )
+                        }
+                    }
                 } catch (e: Exception) {
                     Log.e("Gamification", "Error al registrar audiolibro", e)
                 }
