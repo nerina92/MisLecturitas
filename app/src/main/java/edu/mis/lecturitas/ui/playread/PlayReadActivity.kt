@@ -35,6 +35,11 @@ import edu.mis.lecturitas.ui.playread.ui.theme.MisLecturitasTheme
 import edu.mis.lecturitas.ui.juegos.RompecabezasActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.lifecycle.Observer
+import edu.mis.lecturitas.repository.GamificationRepository
+import edu.mis.lecturitas.repository.UserRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class PlayReadActivity : ComponentActivity() {
 
@@ -43,6 +48,8 @@ class PlayReadActivity : ComponentActivity() {
         const val EXTRA_IMAGE = "EXTRA_IMAGE"
     }
     private val viewModel: PlayReadViewModel by viewModel()
+    private val gamificationRepository = GamificationRepository()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -69,6 +76,9 @@ class PlayReadActivity : ComponentActivity() {
         }
     }
     fun openCuento(url: String){
+        // Registrar que el usuario leyó un libro
+        recordBookActivity()
+
         // Crear una intención para abrir el archivo PDF con la aplicación adecuada
         val intent = Intent(Intent.ACTION_VIEW)
         intent.setDataAndType(Uri.parse(url), "application/pdf")
@@ -77,6 +87,25 @@ class PlayReadActivity : ComponentActivity() {
             startActivity(intent)
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    private fun recordBookActivity() {
+        val currentUser = UserRepository.getCurrentUser()
+        if (currentUser != null && !currentUser.user.equals("invitado", ignoreCase = true)) {
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    gamificationRepository.recordActivity(
+                        userId = currentUser.user,
+                        activityType = "BOOK"
+                    )
+                    Log.d("Gamification", "Libro registrado para usuario: ${currentUser.user}")
+                } catch (e: Exception) {
+                    Log.e("Gamification", "Error al registrar libro", e)
+                }
+            }
+        } else {
+            Log.d("Gamification", "Usuario invitado - no se registra actividad")
         }
     }
 

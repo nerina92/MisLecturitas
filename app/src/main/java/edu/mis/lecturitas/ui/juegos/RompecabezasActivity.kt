@@ -43,6 +43,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import edu.mis.lecturitas.repository.GamificationRepository
+import edu.mis.lecturitas.repository.UserRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 // Función para cargar imagen desde URL
 suspend fun loadImageFromUrl(url: String, context: android.content.Context): ImageBitmap? {
@@ -80,9 +84,10 @@ class RompecabezasActivity : ComponentActivity() {
         const val EXTRA_URL = "EXTRA_URL"
         const val EXTRA_IMAGE = "EXTRA_IMAGE"
     }
-    
+
     private var tts: TextToSpeech? = null
     private lateinit var mpCorrect: MediaPlayer
+    private val gamificationRepository = GamificationRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,7 +101,7 @@ class RompecabezasActivity : ComponentActivity() {
         // Obtener URL e imagen de los extras
         val urlRecibida: String? = intent.getStringExtra("EXTRA_URL")
         val imagenRecibida: String? = intent.getStringExtra("EXTRA_IMAGE")
-        
+
         setContent {
             MaterialTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
@@ -110,10 +115,33 @@ class RompecabezasActivity : ComponentActivity() {
                                 null
                             )
                         },
-                        onComplete = { mpCorrect.start() }
+                        onComplete = {
+                            mpCorrect.start()
+                            // Registrar actividad de juego completado
+                            recordGameActivity()
+                        }
                     )
                 }
             }
+        }
+    }
+
+    private fun recordGameActivity() {
+        val currentUser = UserRepository.getCurrentUser()
+        if (currentUser != null && !currentUser.user.equals("invitado", ignoreCase = true)) {
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    gamificationRepository.recordActivity(
+                        userId = currentUser.user,
+                        activityType = "GAME"
+                    )
+                    Log.d("Gamification", "Juego registrado para usuario: ${currentUser.user}")
+                } catch (e: Exception) {
+                    Log.e("Gamification", "Error al registrar juego", e)
+                }
+            }
+        } else {
+            Log.d("Gamification", "Usuario invitado - no se registra actividad")
         }
     }
     override fun onDestroy() {

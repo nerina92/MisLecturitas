@@ -25,14 +25,26 @@ import androidx.compose.ui.viewinterop.AndroidView
 import edu.mis.lecturitas.model.AudioLibro
 import edu.mis.lecturitas.ui.MyToolbar
 import edu.mis.lecturitas.ui.main.ui.theme.MisLecturitasTheme
+import edu.mis.lecturitas.repository.GamificationRepository
+import edu.mis.lecturitas.repository.UserRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class VideoPlayerActivity : ComponentActivity() {
+
+    private val gamificationRepository = GamificationRepository()
+    private var videoStartTime: Long = 0
+    private val MIN_VIEW_TIME_SECONDS = 30 // Mínimo 30 segundos para contar como "visto"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // Mantener la pantalla encendida durante la reproducción
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+        // Registrar tiempo de inicio
+        videoStartTime = System.currentTimeMillis()
 
         val audioLibro = intent.getSerializableExtra("audioLibro") as? AudioLibro
 
@@ -53,8 +65,36 @@ class VideoPlayerActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+
+        // Registrar actividad si vio al menos MIN_VIEW_TIME_SECONDS segundos
+        val viewTimeSeconds = (System.currentTimeMillis() - videoStartTime) / 1000
+        if (viewTimeSeconds >= MIN_VIEW_TIME_SECONDS) {
+            recordAudiobookActivity()
+        } else {
+            Log.d("Gamification", "Audiolibro no registrado - tiempo de visualización insuficiente: ${viewTimeSeconds}s")
+        }
+
         // Limpiar la bandera de mantener pantalla encendida
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    private fun recordAudiobookActivity() {
+        val currentUser = UserRepository.getCurrentUser()
+        if (currentUser != null && !currentUser.user.equals("invitado", ignoreCase = true)) {
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    gamificationRepository.recordActivity(
+                        userId = currentUser.user,
+                        activityType = "AUDIOBOOK"
+                    )
+                    Log.d("Gamification", "Audiolibro registrado para usuario: ${currentUser.user}")
+                } catch (e: Exception) {
+                    Log.e("Gamification", "Error al registrar audiolibro", e)
+                }
+            }
+        } else {
+            Log.d("Gamification", "Usuario invitado - no se registra actividad")
+        }
     }
 }
 
