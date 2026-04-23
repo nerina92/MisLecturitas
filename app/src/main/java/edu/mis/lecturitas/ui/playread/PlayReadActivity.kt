@@ -94,6 +94,13 @@ class PlayReadActivity : ComponentActivity() {
         }
 
         try {
+            // Si la URL es de Firebase Storage, usar Google Docs Viewer (más confiable)
+            if (url.contains("firebasestorage.googleapis.com") || url.contains("firebase")) {
+                Log.d("PlayReadActivity", "URL de Firebase detectada, usando Google Docs Viewer")
+                openPdfWithGoogleDocs(url)
+                return
+            }
+
             val uri = Uri.parse(url)
             Log.d("PlayReadActivity", "URI parseada: $uri, scheme: ${uri.scheme}")
 
@@ -110,30 +117,43 @@ class PlayReadActivity : ComponentActivity() {
             if (activities.size > 0) {
                 startActivity(intent)
             } else {
-                // No hay app para abrir PDFs
-                Log.e("PlayReadActivity", "No se encontró ninguna app para abrir PDFs")
-                android.widget.Toast.makeText(
-                    this,
-                    "No tienes ninguna app para abrir PDFs instalada.\nPor favor, instala un lector de PDF desde Play Store.",
-                    android.widget.Toast.LENGTH_LONG
-                ).show()
-
-                // Intentar abrir Play Store para instalar un lector PDF
-                try {
-                    val playStoreIntent = Intent(Intent.ACTION_VIEW).apply {
-                        data = Uri.parse("market://search?q=pdf reader&c=apps")
-                    }
-                    startActivity(playStoreIntent)
-                } catch (e: Exception) {
-                    Log.e("PlayReadActivity", "No se pudo abrir Play Store", e)
-                }
+                // No hay app para abrir PDFs, usar Google Docs como fallback
+                Log.w("PlayReadActivity", "No se encontró app para PDFs, usando Google Docs Viewer")
+                openPdfWithGoogleDocs(url)
             }
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e("PlayReadActivity", "Error al abrir PDF: ${e.message}", e)
+
+            // Intentar con Google Docs como último recurso
+            try {
+                openPdfWithGoogleDocs(url)
+            } catch (e2: Exception) {
+                android.widget.Toast.makeText(
+                    this,
+                    "Error al abrir el PDF: ${e.message}\nURL: $url",
+                    android.widget.Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
+
+    private fun openPdfWithGoogleDocs(pdfUrl: String) {
+        // Usar Google Docs Viewer para abrir el PDF
+        val googleDocsUrl = "https://docs.google.com/viewer?url=${Uri.encode(pdfUrl)}"
+        Log.d("PlayReadActivity", "Abriendo con Google Docs Viewer: $googleDocsUrl")
+
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse(googleDocsUrl)
+        }
+
+        try {
+            startActivity(intent)
+        } catch (e: Exception) {
+            Log.e("PlayReadActivity", "Error al abrir con Google Docs", e)
             android.widget.Toast.makeText(
                 this,
-                "Error al abrir el PDF: ${e.message}\nURL: $url",
+                "No se pudo abrir el PDF. Por favor, verifica tu conexión a internet.",
                 android.widget.Toast.LENGTH_LONG
             ).show()
         }
