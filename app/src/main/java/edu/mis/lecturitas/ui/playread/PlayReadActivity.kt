@@ -84,11 +84,18 @@ class PlayReadActivity : ComponentActivity() {
         // Crear una intención para abrir el archivo PDF con la aplicación adecuada
         val intent = Intent(Intent.ACTION_VIEW)
         intent.setDataAndType(Uri.parse(url), "application/pdf")
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_GRANT_READ_URI_PERMISSION)
         try {
             startActivity(intent)
         } catch (e: Exception) {
             e.printStackTrace()
+            Log.e("PlayReadActivity", "Error al abrir PDF: ${e.message}")
+            // Mostrar mensaje al usuario
+            android.widget.Toast.makeText(
+                this,
+                "No se pudo abrir el PDF. Por favor, instala un lector de PDF.",
+                android.widget.Toast.LENGTH_LONG
+            ).show()
         }
     }
 
