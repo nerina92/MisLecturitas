@@ -81,19 +81,59 @@ class PlayReadActivity : ComponentActivity() {
         // Registrar que el usuario leyó un libro
         recordBookActivity()
 
-        // Crear una intención para abrir el archivo PDF con la aplicación adecuada
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.setDataAndType(Uri.parse(url), "application/pdf")
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        try {
-            startActivity(intent)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Log.e("PlayReadActivity", "Error al abrir PDF: ${e.message}")
-            // Mostrar mensaje al usuario
+        Log.d("PlayReadActivity", "Intentando abrir PDF con URL: $url")
+
+        // Validar que la URL no esté vacía
+        if (url.isBlank()) {
             android.widget.Toast.makeText(
                 this,
-                "No se pudo abrir el PDF. Por favor, instala un lector de PDF.",
+                "Error: URL del PDF no válida",
+                android.widget.Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+
+        try {
+            val uri = Uri.parse(url)
+            Log.d("PlayReadActivity", "URI parseada: $uri, scheme: ${uri.scheme}")
+
+            // Crear intención para abrir PDF
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(uri, "application/pdf")
+                flags = Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_GRANT_READ_URI_PERMISSION
+            }
+
+            // Verificar si hay una app que pueda abrir PDFs
+            val packageManager = packageManager
+            val activities = packageManager.queryIntentActivities(intent, 0)
+
+            if (activities.size > 0) {
+                startActivity(intent)
+            } else {
+                // No hay app para abrir PDFs
+                Log.e("PlayReadActivity", "No se encontró ninguna app para abrir PDFs")
+                android.widget.Toast.makeText(
+                    this,
+                    "No tienes ninguna app para abrir PDFs instalada.\nPor favor, instala un lector de PDF desde Play Store.",
+                    android.widget.Toast.LENGTH_LONG
+                ).show()
+
+                // Intentar abrir Play Store para instalar un lector PDF
+                try {
+                    val playStoreIntent = Intent(Intent.ACTION_VIEW).apply {
+                        data = Uri.parse("market://search?q=pdf reader&c=apps")
+                    }
+                    startActivity(playStoreIntent)
+                } catch (e: Exception) {
+                    Log.e("PlayReadActivity", "No se pudo abrir Play Store", e)
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.e("PlayReadActivity", "Error al abrir PDF: ${e.message}", e)
+            android.widget.Toast.makeText(
+                this,
+                "Error al abrir el PDF: ${e.message}\nURL: $url",
                 android.widget.Toast.LENGTH_LONG
             ).show()
         }
